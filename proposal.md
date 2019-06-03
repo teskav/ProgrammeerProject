@@ -3,10 +3,10 @@ Name: Teska Vaessen
 
 Student number: 10046341
 
-How much influence has health insurance on the health spendings and health status of a country?
+How much influence has health spendings and on the health status of a country?
 
 ## Problem statement
-Some countries in the European Union have a compulsory insurance for their citizens, but not all countries. This visualisation should help citizens of the EU to get to know if you should spend more money on healt insuance. But it is also necessary for the governments of the countries to see if they should make health insurance compulsory or not, so they know if they should spend more money on health.
+Some countries in the European Union have a compulsory insurance for their citizens, but not all countries. This visualisation should help citizens of the EU to get to know if you should spend more money on health (insurance). But it is also necessary for the governments of the countries to see how healthy their citizens are and if they should spend more money on health (and maybe make health insurance compulsory or not).
 
 ## Solution
 To solve this problem I will first make a map of Europe where you can see how much a country spends on health. When you click on a country in the map you will see a pie chart of that specific country of the distribution of the health spendings, but you will also see in another pie chart how much they spend on other sectors. With a (dropdown) menu or a slider you can choose between the different kind of years in the data set.
