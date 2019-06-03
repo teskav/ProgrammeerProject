@@ -13,7 +13,7 @@ Some countries in the European Union (EU) spend more money on health than other 
 ## Solution
 To solve this problem I will start with the most important question: How much effect does health spendings have at the health of the citizens of a country? I will visualize this relationship between health spendings and health statistics (e.g. BMI, alcohol and tabacco consumption, perceived health status, life expectancy, mortality rate) with multiple scatterplots. On the x-axis I will show the total health spendings per 1000 capita. The color of the dots will be determined by how many percent of the total health spendings come from the government. For the y-axis you can choose between multiple variables with a (drop-down) menu.
 
-<!-- ![Sketch 1](doc/proposalSketch1.png) -->
+![Sketch 1](doc/proposalSketch1.png)
 
 After we determined the relationship between health spendings and the health statistics, it is time to get more insight in the spendings of a country. How much does a country already spend on health and is there even a possibility to spend more on health?
 To get the answer to this question I will first make a map of Europe where you can see how much a country spends on health (in % of GDP). When you click on a country in the map you will see a pie chart of that specific country of the distribution of the health spendings (voluntary/compulsory etc.), but you will also see in another pie chart how much they spend on other sectors. With a slider you can choose between the different kind of years in the data set. For an example, see the sketch below:
