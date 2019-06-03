@@ -9,7 +9,9 @@ How much influence has health spendings and on the health status of a country?
 Some countries in the European Union have a compulsory insurance for their citizens, but not all countries. This visualisation should help citizens of the EU to get to know if you should spend more money on health (insurance). But it is also necessary for the governments of the countries to see how healthy their citizens are and if they should spend more money on health (and maybe make health insurance compulsory or not).
 
 ## Solution
-To solve this problem I will first make a map of Europe where you can see how much a country spends on health. When you click on a country in the map you will see a pie chart of that specific country of the distribution of the health spendings, but you will also see in another pie chart how much they spend on other sectors. With a (dropdown) menu or a slider you can choose between the different kind of years in the data set.
+To solve this problem I will first make a map of Europe where you can see how much a country spends on health. When you click on a country in the map you will see a pie chart of that specific country of the distribution of the health spendings, but you will also see in another pie chart how much they spend on other sectors. With a (dropdown) menu or a slider you can choose between the different kind of years in the data set. For an example, see the sketch below:
+
+![sketch](doc/proposalSketch1.png)
 
 I will also show the relationship between health spendings and health statistics (e.g. BMI, alcohol and tabacco consumption, perceived health status, life expectancy, mortality rate) in a scatter plot. With a (dropdown) menu you can choose from which variable you want the relationshop with the health spendings.
 
@@ -32,6 +34,7 @@ For example the health spending variable: https://data.oecd.org/healthres/health
 ### External components
 + D3
 + D3-tip
++ TopoJSON
 + (Maybe D3-legend)
 
 ### Hardest part
