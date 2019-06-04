@@ -24,25 +24,25 @@ The visualization page will have the following components:
 
 ![Sketch 2](doc/designSketch4.png)
 
-The scatter plot and drop down menu:
+**The scatter plot and drop down menu:**
 
 ![Sketch 3](doc/proposalSketch1.png)
 
 This is a scatter plot with a drop down menu where you can choose between the different kind of health variables for the y-axis. When you click on a country you will see a donut chart and a pie chart for that specific country. For this I will need d3, d3-tip and d3-legend. For the drop down menu I will also need to use bootstrap.
 
-The map of Europe:
+**The map of Europe:**
 
 ![Sketch 4](doc/designSketch3.png)
 
-This is a map of Europe. When you click on a country you will see a donut chart and a pie chart. For the map I will need TopojSON, D3 and D3-legend.
+This is a map of Europe. When you click on a country you will see a donut chart and a pie chart of that specific country. For the map I will need TopojSON, D3 and D3-legend.
 
-The donut and pie chart:
+**The donut and pie chart:**
 
 ![Sketch 5](doc/piecharts.png)
 
 For the donut and pie chart I will need D3 and D3-tip.
 
-The time slider:
+**The time slider:**
 
 ![Sketch 6](doc/timeslider.png)
 
