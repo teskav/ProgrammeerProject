@@ -3,11 +3,10 @@ Name: Teska Vaessen
 
 Student number: 11046341
 
-Should the government of a country spend more money on health?
+Should the government of a country in the European Union spend more money on health?
 
 ## Problem statement
-Some countries in the European Union (EU) spend more money on health than other countries. Besides that some countries make health insurance compulsory for their citizens, while other countries don't. But how much effects the health spendings the health status of a country? This visualization should help the government of EU countries to see if they should spend more money on health.
-
+Some countries in the European Union (EU) spend more money on health than other countries. Besides that, some countries make health insurance compulsory for their citizens, while other countries don't. But how much do the health spendings effect the health status of a country? This visualization should help the government of EU countries to see if they should spend more money on health.
 
 ## Solution
 ## Relationship
@@ -17,23 +16,24 @@ To solve this problem I will start with the most important question: How much ef
 
 ## Specifics
 After we determined the relationship between health spendings and the health statistics, it is time to get more insight in the spendings of a country. How much does a country already spend on health and is there even a possibility to spend more on health?
-To get the answer to this question I will first make a map of Europe where you can see how much a country spends on health (in % of GDP). When you click on a country in the map you will see a pie chart of that specific country of the distribution of the health spendings (voluntary/compulsory etc.), but you will also see in another pie chart how much they spend on other sectors. With a slider you can choose between the different kind of years in the data set. For an example, see the sketch below:
+To get the answer to this question I will first make a map of Europe where you can see how much a country spends on health (in % of GDP). When you click on a country in the map (you will also see these charts when you click on a country dot in the scatter plot) you will see a pie chart of that specific country of the distribution of the health spendings (voluntary/compulsory etc.), but you will also see in another pie chart how much they spend on other sectors. With a slider you can choose between the different kind of years in the data set. For an example, see the sketches below:
 
-![Sketch 2](doc/proposalSketch2.png)
+![Sketch 2](doc/designSketch3.png)
+![Sketch 2](doc/piecharts.png)
+![Sketch 2](doc/timeslider.png)
 
-With these visualizations a country should be able to see if the citizens in their country are healthy compared to other countries and if there is room for improvement. When they need improvement they can see on which specific health problem they should spend more money in and also where they can cut down the money from.
+With all these visualizations a country should be able to see if the citizens in their country are healthy compared to other countries and if there is room for improvement. When they need improvement they can see on which specific health problem they should spend more money in and also where they can cut down the money from.
 
 ### Main features
 + Scatter plot of relationship between health spendings and health statistics (different variables) (**MVP**)
 + (Drop-down) menu to choose the variable for the health statistics (**MVP**)
-+ Also choose between different years (**optional**)
 + Put another variable in the size of the dot to make things more clear (**optional**)
 + Generate a regression line in the scatterplots (**optional**)
-+ Show more information about the health equipment/resources in a country, e.g. number of hospital beds, doctors and nurses (**optional**)
-+ Map of Europe which shows the health spendings (in % of GDP) of the countries (**MVP**)
-+ When you click on a country show two pie charts: first with the distribution of the health spendings (maybe a stacked bar chart a better idea?) and second how much they spend on different sectors (**MVP**)
 + Choose with a slider between different years for the country's data (**MVP**)
-
++ Map of Europe which shows the health spendings (in % of GDP) of the countries (**MVP**)
++ When you click on a country (in either the map or the scatter plot) show two charts: first a donut chart with the distribution of the health spendings and second a pie chart how much they spend on different sectors (**MVP**)
++ Also show the donut and pie chart for the average of Europe (**optional**)
++ Show more information about the health equipment/resources in a country, e.g. number of hospital beds, doctors and nurses (**optional**)
 
 ## Prerequisites
 ### Data sources
@@ -49,8 +49,8 @@ I have to combine all variables into one or two datasets. I will get my data fro
 ### External components
 + D3
 + D3-tip
++ D3-legend
 + TopoJSON
-+ (Maybe D3-legend)
 
 ### Review similar visiualization
 A kind of similar visualization is one from [healthdata](https://vizhub.healthdata.org/fgh/). They also show the spendings in a world map, but here you can also choose for the world map between the different kind of spendings. They chose to make a stacked bar chart to show the distribution of the health spendings. But since I want to show it per year I think a pie chart will make this more clear. They also don't show the health statistics of a country, but I think that is necessary because a country should know how healthy their country is.
