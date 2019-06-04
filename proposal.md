@@ -28,6 +28,7 @@ With these visualizations a country should be able to see if the citizens in the
 + (Drop-down) menu to choose the variable for the health statistics (**MVP**)
 + Also choose between different years (**optional**)
 + Put another variable in the size of the dot to make things more clear (**optional**)
++ Generate a regression line in the scatterplots (**optional**)
 + Show more information about the health equipment/resources in a country, e.g. number of hospital beds, doctors and nurses (**optional**)
 + Map of Europe which shows the health spendings (in % of GDP) of the countries (**MVP**)
 + When you click on a country show two pie charts: first with the distribution of the health spendings (maybe a stacked bar chart a better idea?) and second how much they spend on different sectors (**MVP**)
