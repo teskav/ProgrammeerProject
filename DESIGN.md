@@ -21,7 +21,7 @@ My website will have the following pages:
 ![Sketch 1](doc/designSketch1.png)
 
 The visualization page will have the following components:
-![Sketch 2](doc/designSketch2.png)
+![Sketch 2](doc/designSketch4.png)
 
 The scatter plot and drop down menu:
 ![Sketch 3](doc/proposalSketch1.png)
