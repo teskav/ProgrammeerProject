@@ -16,3 +16,10 @@ During the standup we discussed my project and they gave me the idea to also hig
 They also gave me the idea that I could visualize the scatter plot and the map of Europe next to eachother, so that it is easy to compare. So I will implement this in my website.
 
 I started with reformatting my data. I had an idea how I wanted my JSON file for the data and I wanted to make this in python, but I found out this was hard. I got the tip from a fellow student to finish my JSON file in JavaScript, because there it is easier to loop over objects.
+
+## Day 4 (06-06-2019)
+I have some struggles with reformatting my data (it will take me more time than expected). My fellow students (Thomas and Enrikos) at the standup told me to first reformat a part of data and already start with that data. Then I am sure that it will be okay to do it with the rest of the data, since all the datasets are in the same format.
+
+I also finished the set-up of my website. As I got the feedback from yesterday, I made two columns to show my scatter plot and map of Europe next to eachother.
+
+![Sketch 2](doc/processBook2.PNG)
