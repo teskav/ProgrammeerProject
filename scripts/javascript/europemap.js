@@ -3,7 +3,7 @@
    This file............ */
 
 window.onload = function() {
-
+    console.log("hoi");
     worldmap()
     // var requests = [d3v5.json("code/python/data.json")];
     //
@@ -30,13 +30,31 @@ window.onload = function() {
         // }
 
         // Create world map
-        var map = new Datamap({element: document.getElementById("#container"),
+        // // zoom in on the worldmap
+        // var projection = d3v5.geoMercator()
+        //     .scale(450)
+        //     .translate([500 / 3.5, 200/0.7]);
+        //
+        // // call the zoom in the map
+        // var path = d3v5.geoPath().projection(projection);
+        var map = new Datamap({element: document.getElementById("europemap"),
             // data: dataset,
+            // zoom: 'europe',
+            setProjection: function(element) {
+                var projection = d3v3.geo.equirectangular()
+                                   .center([15, 52])
+                                   .rotate([4.4, 0])
+                                   .scale(475)
+                                   .translate([element.offsetWidth / 2, element.offsetHeight / 2]);
+                var path = d3v3.geo.path()
+                                   .projection(projection);
+                return {path: path, projection: projection};
+            },
             fills: {
                 defaultFill: "#808080"
             },
             geographyConfig: {
-            popupTemplate: function(geo, dataset) {
+            popupTemplate: function(geo) {
                 return ['<div class="hoverinfo"><strong>',
                         'Population density in ' + geo.properties.name,
                         // ': ' + dataset['PopulationDensity'],

@@ -23,3 +23,17 @@ I have some struggles with reformatting my data (it will take me more time than 
 I also finished the set-up of my website. As I got the feedback from yesterday, I made two columns to show my scatter plot and map of Europe next to eachother.
 
 ![Sketch 2](doc/processBook2.PNG)
+
+## Day 5 (07-06-2019)
+Today I had some struggle with linking my html and javascript code. I wanted my html code in a seperate folder 'html' in the folder 'scripts'. I could not link my html and javascript this way, so I got the tip to put all my html code in the folder 'scripts' and not in a seperate folder. This way I can link the html and javascript.
+
+I also added the world map to my page (see picture). I still need to zoom in on Europe, since I only have the data from the European Union. I don't know how I will do this yet, but I will find this out after the weekend.
+
+![Sketch 3](doc/processBook3.PNG)
+
+## Day 6 (11-06-2019)
+Today I tried to zoom in on my world map to show only the countries of Europe. This was harder than I thought, but I fixed it. It now looks like this:
+
+![Sketch 3](doc/processBook3.PNG)
+
+During the standup Pascalle gave me the feedback to have a look if I can delete the countries which are not from Europe, since you can still see some of those countries. I will keep this in mind, since I think that will look nicer.
