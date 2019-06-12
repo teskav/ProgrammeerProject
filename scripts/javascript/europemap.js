@@ -104,13 +104,14 @@ window.onload = function() {
             popupTemplate: function(geo, datamap) {
                 return ['<div class="hoverinfo"><strong>',
                         'Health spendings in ' + geo.properties.name,
-                        ': ' + datamap["TOT"],
+                        ': ' + datamap["TOT"] + ' (% of GDP)',
                         '</strong></div>'].join('');
                     }
                 },
             done: function(data) {
                 data.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
                     country = geography.id;
+                    console.log(country);
                     if (datamap[country] == undefined) {
                         alert("This country has no data available. Click on another country.");
                     }
