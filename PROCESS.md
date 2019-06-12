@@ -34,6 +34,13 @@ I also added the world map to my page (see picture). I still need to zoom in on 
 ## Day 6 (11-06-2019)
 Today I tried to zoom in on my world map to show only the countries of Europe. This was harder than I thought, but I fixed it. It now looks like this:
 
-![Sketch 3](doc/processBook3.PNG)
+![Sketch 4](doc/processBook4.PNG)
 
 During the standup Pascalle gave me the feedback to have a look if I can delete the countries which are not from Europe, since you can still see some of those countries. I will keep this in mind, since I think that will look nicer.
+
+## Day 7 (12-06-2019)
+During the stand-up everyone told me to really get my data ready. I worked on it all day, but I was in the queue for questions for a long time. Nigel helped me with my problem and now my data is ready for the Europe map. So at the end of the day I started adding the colors of the countries and I also deleted the non-European countries which were still visible on the map (see feedback of day 6).
+
+![Sketch 5](doc/processBook5.PNG)
+
+This is the map for the year 2000. I chose this color range, since it is color blind safe and I think that blue fits the theme "health". I also consired red colors, but it was a little bit too heavy. It would also be weird to choose very gay colours. I am still in doubt if I should do the visualization for whole Europe or just for the European Union, since now a lot of countries don't have data (see the grey countries). I will ask for feedback tomorrow at the standup. Tomorrow I want to add the time slider, so you can switch between the different years on the map of Europe.
