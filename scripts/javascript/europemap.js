@@ -10,7 +10,7 @@ window.onload = function() {
     Promise.all(requests).then(function(response) {
 
         var dataset = preprocess(response[0]);
-        console.log(dataset[2000]);
+        // console.log(dataset[2000]);
         // Make variable list for the total health spendings
         var healthSpendings = [];
         for (year in dataset){
@@ -18,11 +18,13 @@ window.onload = function() {
                 healthSpendings.push(dataset[year][country]["TOT"])
             }
         }
-        console.log(healthSpendings.sort(function(a, b){return b-a}));
+        // console.log(healthSpendings.sort(function(a, b){return b-a}));
         // Calculate maximums for the domain
         // var maxDeathrate = Math.max.apply(null, deathrate);
         // var maxBirthrate = Math.max.apply(null, birthrate);
-        worldmap(dataset);
+        timeslider(dataset);
+        // Set default worldmap on 2000
+        worldmap(dataset, 2000);
 
     }).catch(function(e){
         throw(e);
@@ -37,7 +39,6 @@ window.onload = function() {
             var YEAR = years[year];
             dataset[YEAR] = {};
         }
-        // console.log(data);
 
         // Set dataset
         for (year in years){
@@ -67,7 +68,48 @@ window.onload = function() {
         return dataset
     };
 
-    function worldmap(dataset) {
+    function timeslider(dataset) {
+        // Based all slider code on https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
+        // from John Walley’s Block e1d256b81e51da68f7feb632a53c3518
+
+        // Set years
+        var dataTime = d3v5.range(0, 18).map(function(d) {
+            return new Date(2000 + d, 10, 3);
+        });
+
+        // Set slider
+        var sliderTime = d3v5.sliderBottom()
+                             .min(d3v5.min(dataTime))
+                             .max(d3v5.max(dataTime))
+                             .step(1000 * 60 * 60 * 24 * 365)
+                             .width(600)
+                             .tickFormat(d3v5.timeFormat('%Y'))
+                             .tickValues(dataTime)
+                             .default(new Date(2000, 10, 3))
+                             .on('onchange', val => {
+                                 console.log(val.getFullYear());
+                                 // Remove old map of Europe
+                                 $('#europemap').empty();
+                                 // Create new map of Europe
+                                 worldmap(dataset, val.getFullYear());
+                                 d3v5.select('p#value-time').text(d3v5.timeFormat('%Y')(val));
+                             });
+
+        // Add slider to svg
+        var gTime = d3v5.select('div#slider-time')
+                        .append('svg')
+                        .attr('width', 900)
+                        .attr('height', 100)
+                        .append('g')
+                        .attr('transform', 'translate(250,30)');
+
+        // Call the slider
+        gTime.call(sliderTime);
+
+        d3v5.select('p#value-time').text(d3v5.timeFormat('%Y')(sliderTime.value()));
+    };
+
+    function worldmap(dataset, YEAR) {
 
         // Set colorscale for the world map (threshold domain based on the data)
         var colorScale = d3v5.scaleThreshold()
@@ -80,12 +122,12 @@ window.onload = function() {
                 dataset[year][country]["fillColor"] = colorScale(dataset[year][country]['TOT']);
             }
         }
-        var datamap = dataset[2000];
+        var datamap = dataset[YEAR];
         console.log("datamap:")
         console.log(datamap)
         var map = new Datamap({element: document.getElementById("europemap"),
             data: datamap,
-            // zoom: 'europe',
+            responsive: true,
             setProjection: function(element) {
                 var projection = d3v3.geo.equirectangular()
                                    .center([17, 52])
@@ -96,7 +138,6 @@ window.onload = function() {
                                    .projection(projection);
                 return {path: path, projection: projection};
             },
-            // responsive: true,
             fills: {
                 defaultFill: "#808080"
             },
@@ -120,10 +161,69 @@ window.onload = function() {
                     }
                 });
             }
-
-
         });
+        // addLegend(colorScale);
+    };
 
+    function addLegend(colorScale){
+
+        // Based the legend code on https://bl.ocks.org/mbostock/4573883
+        // from Mike Bostock’s Block 4573883
+        var x = d3v5.scaleLinear()
+                    .domain([0, 1100])
+                    .range([585, 1085]);
+
+        var xAxis = d3v5.axisBottom(x, 440)
+                        .tickSize(13)
+                        .tickValues(colorScale.domain());
+
+        var g = d3v5.select("g").call(xAxis);
+
+        g.select(".domain")
+         .remove();
+
+        g.selectAll("rect")
+         .data(colorScale.range().map(function(color) {
+             var d = colorScale.invertExtent(color);
+             if (d[0] == undefined) {
+                 d[0] = x.domain()[0];
+             }
+             if (d[1] == undefined) {
+                 d[1] = x.domain()[1];
+             }
+             return d;
+           }))
+           .enter().insert("rect", ".tick")
+           .attr("height", 10)
+           .attr("y", 440)
+           .attr("x", function(d) { return x(d[0]); })
+           .attr("width", function(d) { return x(d[1]) - x(d[0]); })
+           .attr("fill", function(d) { return colorScale(d[0]); });
+
+        // Add ticks at right position
+        g.selectAll(".tick")
+         .data(colorScale.range().map(function(color) {
+             var d = colorScale.invertExtent(color);
+             if (d[0] == undefined) {
+                 d[0] = x.domain()[0];
+             }
+             if (d[1] == undefined) {
+                 d[1] = x.domain()[1];
+             }
+             return d;
+           }))
+           .attr("transform", function translate(d) {
+               return "translate(" + x(d[1]) + ","+ 440 + ")";
+           });
+
+        // Add title of the legend
+        g.append("text")
+         .attr("fill", "#000")
+         .attr("font-weight", "bold")
+         .attr("text-anchor", "start")
+         .attr("x", 585)
+         .attr("y", 430)
+         .text("Population density (per sq. mi.)");
     }
 
 };

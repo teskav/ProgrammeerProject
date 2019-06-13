@@ -46,3 +46,10 @@ During the stand-up everyone told me to really get my data ready. I worked on it
 This is the map for the year 2000. I chose this color range, since it is color blind safe and I think that blue fits the theme "health". I also consired red colors, but it was a little bit too heavy. It would also be weird to choose very gay colours. I am still in doubt if I should do the visualization for whole Europe or just for the European Union, since now a lot of countries don't have data (see the grey countries). I will ask for feedback about this problem tomorrow at the standup.
 
 Tomorrow I want to add the time slider, so you can switch between the different years on the map of Europe. I also want to start my scatter plot.
+
+## Day 8 (13-06-2019)
+Today I added the time slider and let the map of Europe update with the new year. What I still don't like about it, is that when I resize my window, the text 'Time slider' resizes with it, but the time slider it self doesn't. Also the current year is now in the top left corner. I was not able to replace it today, but I don't think where it is now looks good, so I will need to replace it later.
+
+![Sketch 6](doc/processBook6.PNG)
+
+I also started creating the legend of the world map, but it is not working yet.
