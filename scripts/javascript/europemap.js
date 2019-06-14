@@ -3,14 +3,14 @@
    This file............ */
 
 window.onload = function() {
-    console.log("hoi");
+
     var requests = [d3v5.json("../python/data.json")];
     // console.log(requests);
 
     Promise.all(requests).then(function(response) {
 
         var dataset = preprocess(response[0]);
-        // console.log(dataset[2000]);
+
         // Make variable list for the total health spendings
         var healthSpendings = [];
         for (year in dataset){
@@ -25,6 +25,7 @@ window.onload = function() {
         timeslider(dataset);
         // Set default worldmap on 2000
         worldmap(dataset, 2000);
+        scatterPlot(dataset);
 
     }).catch(function(e){
         throw(e);
@@ -44,9 +45,6 @@ window.onload = function() {
         for (year in years){
             var YEAR = years[year];
             Object.values(data).forEach(function(d){
-                // dataset[YEAR] = {};
-                // dataset_year = {};
-                // console.log(dataset);
                 if (d["TIME"] == YEAR){
                     // checken of land al in de dictionairy staat dan dit doen
                     if (!(d["LOCATION"] in dataset[YEAR])){
@@ -64,7 +62,7 @@ window.onload = function() {
                 };
             });
         };
-        console.log(dataset);
+        // console.log(dataset);
         return dataset
     };
 
@@ -123,8 +121,8 @@ window.onload = function() {
             }
         }
         var datamap = dataset[YEAR];
-        console.log("datamap:")
-        console.log(datamap)
+        // console.log("datamap:")
+        // console.log(datamap)
         var map = new Datamap({element: document.getElementById("europemap"),
             data: datamap,
             responsive: true,
@@ -162,7 +160,7 @@ window.onload = function() {
                 });
             }
         });
-        // addLegend(colorScale);
+        addLegend(colorScale);
     };
 
     function addLegend(colorScale){
@@ -170,14 +168,14 @@ window.onload = function() {
         // Based the legend code on https://bl.ocks.org/mbostock/4573883
         // from Mike Bostock’s Block 4573883
         var x = d3v5.scaleLinear()
-                    .domain([0, 1100])
-                    .range([585, 1085]);
+                    .domain([0, 12])
+                    .range([0, 600]);
 
-        var xAxis = d3v5.axisBottom(x, 440)
+        var xAxis = d3v5.axisBottom(x)
                         .tickSize(13)
                         .tickValues(colorScale.domain());
 
-        var g = d3v5.select("g").call(xAxis);
+        var g = d3v5.select("#maplegend").call(xAxis);
 
         g.select(".domain")
          .remove();
@@ -185,45 +183,22 @@ window.onload = function() {
         g.selectAll("rect")
          .data(colorScale.range().map(function(color) {
              var d = colorScale.invertExtent(color);
-             if (d[0] == undefined) {
-                 d[0] = x.domain()[0];
-             }
-             if (d[1] == undefined) {
-                 d[1] = x.domain()[1];
-             }
+             if (d[0] == undefined) d[0] = x.domain()[0];
+             if (d[1] == undefined) d[1] = x.domain()[1];
              return d;
-           }))
-           .enter().insert("rect", ".tick")
-           .attr("height", 10)
-           .attr("y", 440)
-           .attr("x", function(d) { return x(d[0]); })
-           .attr("width", function(d) { return x(d[1]) - x(d[0]); })
-           .attr("fill", function(d) { return colorScale(d[0]); });
+         }))
+          .enter().insert("rect", ".tick")
+            .attr("height", 8)
+            .attr("x", function(d) { return x(d[0]); })
+            .attr("width", function(d) { return x(d[1]) - x(d[0]); })
+            .attr("fill", function(d) { return colorScale(d[0]); });
 
-        // Add ticks at right position
-        g.selectAll(".tick")
-         .data(colorScale.range().map(function(color) {
-             var d = colorScale.invertExtent(color);
-             if (d[0] == undefined) {
-                 d[0] = x.domain()[0];
-             }
-             if (d[1] == undefined) {
-                 d[1] = x.domain()[1];
-             }
-             return d;
-           }))
-           .attr("transform", function translate(d) {
-               return "translate(" + x(d[1]) + ","+ 440 + ")";
-           });
-
-        // Add title of the legend
         g.append("text")
-         .attr("fill", "#000")
-         .attr("font-weight", "bold")
-         .attr("text-anchor", "start")
-         .attr("x", 585)
-         .attr("y", 430)
-         .text("Population density (per sq. mi.)");
+            .attr("fill", "#000")
+            .attr("font-weight", "bold")
+            .attr("text-anchor", "start")
+            .attr("y", -6)
+            .text("Health spendings (in % of GDP)");
     }
 
 };

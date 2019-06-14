@@ -53,3 +53,10 @@ Today I added the time slider and let the map of Europe update with the new year
 ![Sketch 6](doc/processBook6.PNG)
 
 I also started creating the legend of the world map, but it is not working yet.
+
+## Day 9 (14-06-2019)
+At the mentor meeting I got the feedback to keep the map of Europe as it is, since if you only do the European Union you will still miss some countries. So I will keep all these countries, even though a lot of East-Europe is missing.
+
+Today I tried to fix my scatter plot. I got the axes of the scatter plot, but somehow the circles don't work. They also won't appear in my html. I worked on this all day, but I couldn't fix it. It seems like the selectAll function does not work. I will ask this after the weekend, because I really don't know what to do.
+
+![Sketch 7](doc/processBook7.PNG)
