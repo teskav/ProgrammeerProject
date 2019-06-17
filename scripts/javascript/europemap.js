@@ -26,6 +26,7 @@ window.onload = function() {
         // Set default worldmap on 2000
         worldmap(dataset, 2000);
         scatterPlot(dataset);
+        pieCharts(dataset);
 
     }).catch(function(e){
         throw(e);
@@ -49,14 +50,16 @@ window.onload = function() {
                     // checken of land al in de dictionairy staat dan dit doen
                     if (!(d["LOCATION"] in dataset[YEAR])){
                         var variables = {};
+                        var spendings = {};
                         variables.country = d["LOCATION"];
                         variables.year = d["TIME"];
-                        variables[d["SUBJECT"]] = d["Value"];
+                        spendings[d["SUBJECT"]] = d["Value"];
+                        variables.healthSpendings = spendings
 
                         dataset[YEAR][d["LOCATION"]] = variables;
                     }
                     else {
-                        dataset[YEAR][d["LOCATION"]][d["SUBJECT"]] = d["Value"];
+                        dataset[YEAR][d["LOCATION"]].healthSpendings[d["SUBJECT"]] = d["Value"];
                     };
 
                 };
@@ -117,7 +120,7 @@ window.onload = function() {
         // Add color to country in dataset
         for (year in dataset){
             for (country in dataset[year]){
-                dataset[year][country]["fillColor"] = colorScale(dataset[year][country]['TOT']);
+                dataset[year][country]["fillColor"] = colorScale(dataset[year][country]["healthSpendings"]['TOT']);
             }
         }
         var datamap = dataset[YEAR];
@@ -143,7 +146,7 @@ window.onload = function() {
             popupTemplate: function(geo, datamap) {
                 return ['<div class="hoverinfo"><strong>',
                         'Health spendings in ' + geo.properties.name,
-                        ': ' + datamap["TOT"] + ' (% of GDP)',
+                        ': ' + datamap['healthSpendings']["TOT"] + ' (% of GDP)',
                         '</strong></div>'].join('');
                     }
                 },

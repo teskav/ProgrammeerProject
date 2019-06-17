@@ -10,8 +10,8 @@ function scatterPlot(healthSpendings) {
 
         // Preprocess the dataset
         var dataset_scatter = preprocess(response[0], healthSpendings);
-        console.log("Testhoi:")
-        console.log(dataset_scatter)
+        // console.log("Testhoi:")
+        // console.log(dataset_scatter)
 
         // Create the scatter plot
         createScatter(dataset_scatter);
@@ -47,7 +47,7 @@ function scatterPlot(healthSpendings) {
         var healthVariable = [];
         for (year in dataset_scatter){
             for (country in dataset_scatter[year]){
-                healthSpendings.push(dataset_scatter[year][country]["TOT"])
+                healthSpendings.push(dataset_scatter[year][country]['healthSpendings']["TOT"])
                 healthVariable.push(dataset_scatter[year][country]["LIFEEXP"])
             }
         }
@@ -58,13 +58,13 @@ function scatterPlot(healthSpendings) {
         // Calculate maximums for the domain
         var maxSpendings = Math.max.apply(null, healthSpendings);
         var maxVariable = 83.7; // nu maar even zo gedaan om de scatterplot te proberen
-        console.log(maxSpendings)
-        console.log(maxVariable)
+        // console.log(maxSpendings)
+        // console.log(maxVariable)
 
         // Define variables for SVG and create SVG element
         var svgWidth = 600;
         var svgHeight = 315;
-        var margin = {top: 50, right: 30, bottom: 20, left: 30};
+        var margin = {top: 40, right: 30, bottom: 20, left: 50};
         var svg = d3v5.select("#scatter")
                       .append("svg")
                       .attr("width", svgWidth)
@@ -83,23 +83,60 @@ function scatterPlot(healthSpendings) {
         var yScale = d3v5.scaleLinear()
                          .domain([0, maxVariable])
                          .range([svgHeight - margin.top, margin.bottom]);
-        console.log(xScale(dataset_new["AUT"]["TOT"]))
 
+        // Set color scale for the color of the dots
+        var colorScale = d3v5.scaleQuantize()
+                        .domain([0, 12])
+                        .range(['#c7e9b4','#7fcdbb','#1d91c0','#253494','#081d58']);
+
+        // console.log(xScale(dataset_new["AUT"]['healthSpendings']["TOT"]))
+        var dataset_new2 = d3v5.entries(dataset_new)
+        console.log(dataset_new2)
+
+        // Based all tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
+        // from Chris Williams’s Block af5b855651ffe29bdca1
+        // Add the tooltip container to the body container
+        // it's invisible and its position/contents are defined during mouseover
+        var tooltip = d3v5.select("body").append("div")
+                          .attr("class", "tooltip")
+                          .style("opacity", 0);
+
+        // tooltip mouseover event handler
+        var tipMouseover = function(d) {
+        var color = colorScale(d['value']['healthSpendings']['COMPULSORY']);
+        var html  = "<span style='color:" + color + ";'>" + d['value']['country'] + "<br> Health Variable: " + d['value']["LIFEEXP"] + "</span><br/>";
+
+            tooltip.html(html)
+                .style("left", (d3v5.event.pageX + 12) + "px")
+                .style("top", (d3v5.event.pageY - 18) + "px")
+                .transition()
+                .duration(200)
+                .style("opacity", .9)
+
+        };
+
+    // tooltip mouseout event handler
+    var tipMouseout = function(d) {
+        tooltip.transition()
+               .duration(300)
+               .style("opacity", 0);
+    };
         // Create the dots
-        svg.selectAll("circle")
-           .data(dataset_new)
+        svg.selectAll(".circle")
+           .data(dataset_new2)
            .enter()
            .append("circle")
            .attr("cx", function(d) {
-               return xScale(d['TOT']);
+               // console.log(d.key)
+               return xScale(d['value']['healthSpendings']['TOT']);
            })
            .attr("cy", function(d) {
-               return yScale(d['LIFEEXP']);
+               return yScale(d['value']['LIFEEXP']);
             })
-           .attr("r", 5);
-            // .style("fill", function(d, i ) { return colorScale(d['Violent']); })
-            // .on("mouseover", tipMouseover)
-            // .on("mouseout", tipMouseout);
+           .attr("r", 4)
+           .style("fill", function(d, i ) { return colorScale(d['value']['healthSpendings']['COMPULSORY']); })
+           .on("mouseover", tipMouseover)
+           .on("mouseout", tipMouseout);
 
         // Create x axis
         var xAxis = d3v5.axisBottom(xScale);
@@ -116,5 +153,62 @@ function scatterPlot(healthSpendings) {
            .attr("class", "axis")
            .attr("transform", "translate(" + margin.left + ", 0)")
            .call(yAxis);
+
+       // Based all legend code on https://bl.ocks.org/zanarmstrong/0b6276e033142ce95f7f374e20f1c1a7
+       // from zan’s Block 0b6276e033142ce95f7f374e20f1c1a7
+       // Set legend for the color of the dots
+       var colorLegend = d3v5.legendColor()
+                             .labelFormat(d3v5.format(".0f"))
+                             .scale(colorScale)
+                             .shapePadding(5)
+                             .shapeWidth(25)
+                             .shapeHeight(10)
+                             .labelOffset(12);
+
+       // Create the legend
+       svg.append("g")
+     	   .attr("class", "legend")
+     	   .attr("transform", "translate(" + 2 * margin.right + "," + margin.bottom * 1.25 + ")")
+     	   .call(colorLegend);
+
+       // Add title for legend
+       svg.append("text")
+          .attr("class", "legend")
+          .attr("x", margin.left)
+       	  .attr("y", margin.top / 2)
+       	  .attr("text-anchor", "start")
+       	  .style("font-weight", "bold")
+          .style("font-size", "10px")
+       	  .text("Government health spendings (in % of GDP)");
+
+       // Add x label
+       svg.append('text')
+          .attr('class', 'title')
+          .attr("font-weight", "bold")
+          .attr('x', (svgWidth + margin.left) / 2)
+          .attr('y', svgHeight - 10)
+          .attr('text-anchor', 'middle')
+          .text('Total health spendings (in % of GDP)');
+
+       // Add y label
+       svg.append('text')
+          .attr('class', 'title')
+          .attr("font-weight", "bold")
+          .attr("transform", "rotate(-90)")
+          .attr('x', -svgHeight / 2)
+          .attr('y', margin.left / 2)
+          .attr('text-anchor', 'middle')
+          .text('Health variable');
+
+       // Add title
+       svg.append('text')
+          .attr('class', 'title')
+          .attr("font-size", "14px")
+          .attr("font-weight", "bold")
+          .attr('x', (svgWidth + margin.left + 10) / 2)
+          .attr('y', 10)
+          .attr('text-anchor', 'middle')
+          .text('Relationship between health spendings and health variable');
+
     }
 };
