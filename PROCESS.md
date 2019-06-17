@@ -60,3 +60,16 @@ At the mentor meeting I got the feedback to keep the map of Europe as it is, sin
 Today I tried to fix my scatter plot. I got the axes of the scatter plot, but somehow the circles don't work. They also won't appear in my html. I worked on this all day, but I couldn't fix it. It seems like the selectAll function does not work. I will ask this after the weekend, because I really don't know what to do.
 
 ![Sketch 7](doc/processBook7.PNG)
+
+## Day 10 (17-06-2019)
+I started my pie chart today. First I created the pie chart for the distribution of the health spendings. This looks like this now:
+
+![Sketch 8](doc/processBook8.PNG)
+
+I don't like the colors of the chart, but I am not sure if I should choose the same colours as for mu map of Europe or if I should use other colors. I will ask for feedback at the stand up tomorrow. I also need to add a tooltip (started this but the tooltip showed up at the wrong position) and I need to add a legend and a title.
+
+Besides that I finally got the help I needed for my scatter plot. Apparently the data was not in the right format to make a scatter plot. Jasper helped me with this. Now my scatter plot looks like this:
+
+![Sketch 9](doc/processBook9.PNG)
+
+As you can see I already added colors to the dots including color legend. I used the same colors as my map of Europe, but I have the same issue with this as with the pie chart if I should use other colors. I also already added a tooltip (not visible in the picture). As you can see in the picture there is one dot outside the scatter plot (in the title). This is a dot from a country which has not that variable of that specific variable in that specific year. I am not sure what to do with these missing data points. I will think about this.
