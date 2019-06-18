@@ -62,8 +62,8 @@ function scatterPlot(healthSpendings) {
         // console.log(maxVariable)
 
         // Define variables for SVG and create SVG element
-        var svgWidth = 600;
-        var svgHeight = 315;
+        var svgWidth = d3v5.select('#scatter').node().getBoundingClientRect().width;
+        var svgHeight = 350;
         var margin = {top: 40, right: 30, bottom: 20, left: 50};
         var svg = d3v5.select("#scatter")
                       .append("svg")
@@ -93,7 +93,7 @@ function scatterPlot(healthSpendings) {
         var dataset_new2 = d3v5.entries(dataset_new)
         console.log(dataset_new2)
 
-        // Based all tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
+        // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
         // from Chris Williams’s Block af5b855651ffe29bdca1
         // Add the tooltip container to the body container
         // it's invisible and its position/contents are defined during mouseover
@@ -115,12 +115,13 @@ function scatterPlot(healthSpendings) {
 
         };
 
-    // tooltip mouseout event handler
-    var tipMouseout = function(d) {
-        tooltip.transition()
-               .duration(300)
-               .style("opacity", 0);
-    };
+        // tooltip mouseout event handler
+        var tipMouseout = function(d) {
+            tooltip.transition()
+                   .duration(300)
+                   .style("opacity", 0);
+        };
+
         // Create the dots
         svg.selectAll(".circle")
            .data(dataset_new2)
@@ -209,6 +210,26 @@ function scatterPlot(healthSpendings) {
           .attr('y', 10)
           .attr('text-anchor', 'middle')
           .text('Relationship between health spendings and health variable');
+
+          // $(window).on('resize', function() {
+          //     var svgWidth = d3v5.select('#scatter').node().getBoundingClientRect().width;
+          //     var svgHeight = 350;
+          //     var margin = {top: 40, right: 30, bottom: 20, left: 50};
+          //     svg.attr("width", svgWidth)
+          //               .attr("height", svgHeight);
+          //     // map.resize();
+          // });
+        //   function updateWindow(){
+        //       var w = window,
+        //         d = document,
+        //         e = d.documentElement,
+        //         g = d.getElementById('scatter'),
+        //     x = d3v5.select('#scatter').node().getBoundingClientRect().width
+        //     // y = w.innerHeight|| e.clientHeight|| g.clientHeight;
+        //
+        //     svg.attr("width", x);
+        // }
+        // d3v5.select(window).on('resize', updateWindow);
 
     }
 };

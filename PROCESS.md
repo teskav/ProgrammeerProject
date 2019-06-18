@@ -73,3 +73,16 @@ Besides that I finally got the help I needed for my scatter plot. Apparently the
 ![Sketch 9](doc/processBook9.PNG)
 
 As you can see I already added colors to the dots including color legend. I used the same colors as my map of Europe, but I have the same issue with this as with the pie chart if I should use other colors. I also already added a tooltip (not visible in the picture). As you can see in the picture there is one dot outside the scatter plot (in the title). This is a dot from a country which has not that variable of that specific variable in that specific year. I am not sure what to do with these missing data points. I will think about this.
+
+## Day 11 (18-06-2019)
+Today I fixed the legend for my Europe map. I got the tip that it didn't work, because it was not in a SVG. So I added a SVG and now the legend works.
+
+![Sketch 10](doc/processBook10.PNG)
+
+I also fixed the tooltip for the pie chart. I still don't really like the style of it, since it is a bit plain and boring, but at least it is at the right place. I will make the tooltip look nicer if I have time left. Besides that I added the donut chart. I also added the legends of both charts. I don't like the colors I have now, but I will think about the colors later.
+
+![Sketch 11](doc/processBook11.PNG)
+
+I decided to put the charts next to each other and the legends on the other side of the chart. I thought this was the most clear position.
+
+I also linked the pie charts to the time slider and the map of Europe. Some times it works and some times it doesn't. Also the update function does not work well, since the new charts will appear below the old charts. I will try to fix this tomorrow.

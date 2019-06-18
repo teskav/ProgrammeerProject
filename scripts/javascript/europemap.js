@@ -22,11 +22,17 @@ window.onload = function() {
         // Calculate maximums for the domain
         // var maxDeathrate = Math.max.apply(null, deathrate);
         // var maxBirthrate = Math.max.apply(null, birthrate);
-        timeslider(dataset);
+
+        var currentCountry = 'None';
+        timeslider(dataset, currentCountry);
+
         // Set default worldmap on 2000
         worldmap(dataset, 2000);
         scatterPlot(dataset);
-        pieCharts(dataset);
+        // Set default pie charts on 2000 in the Netherlands
+        var currentCountry = "NLD";
+        console.log(currentCountry)
+        pieCharts(dataset, 2000, currentCountry);
 
     }).catch(function(e){
         throw(e);
@@ -51,10 +57,12 @@ window.onload = function() {
                     if (!(d["LOCATION"] in dataset[YEAR])){
                         var variables = {};
                         var spendings = {};
+                        var governmentSpendings = {};
                         variables.country = d["LOCATION"];
                         variables.year = d["TIME"];
                         spendings[d["SUBJECT"]] = d["Value"];
-                        variables.healthSpendings = spendings
+                        variables.healthSpendings = spendings;
+                        variables.governmentSpendings = governmentSpendings;
 
                         dataset[YEAR][d["LOCATION"]] = variables;
                     }
@@ -91,8 +99,11 @@ window.onload = function() {
                                  console.log(val.getFullYear());
                                  // Remove old map of Europe
                                  $('#europemap').empty();
+                                 $('#maplegend').empty();
                                  // Create new map of Europe
                                  worldmap(dataset, val.getFullYear());
+                                 console.log(currentCountry)
+                                 pieCharts(dataset, val.getFullYear(), currentCountry);
                                  d3v5.select('p#value-time').text(d3v5.timeFormat('%Y')(val));
                              });
 
@@ -158,10 +169,15 @@ window.onload = function() {
                         alert("This country has no data available. Click on another country.");
                     }
                     else {
-                        console.log('hoi')
+                        console.log('Update pie charts')
+                        currentCountry = country;
+                        pieCharts(dataset, YEAR, currentCountry);
                     }
                 });
             }
+        });
+        $(window).on('resize', function() {
+            map.resize();
         });
         addLegend(colorScale);
     };
@@ -171,14 +187,14 @@ window.onload = function() {
         // Based the legend code on https://bl.ocks.org/mbostock/4573883
         // from Mike Bostock’s Block 4573883
         var x = d3v5.scaleLinear()
-                    .domain([0, 12])
-                    .range([0, 600]);
+                    .domain([3, 12])
+                    .range([0, 300]);
 
         var xAxis = d3v5.axisBottom(x)
                         .tickSize(13)
                         .tickValues(colorScale.domain());
 
-        var g = d3v5.select("#maplegend").call(xAxis);
+        var g = d3v5.select("#maplegend").append("svg").call(xAxis);
 
         g.select(".domain")
          .remove();
@@ -191,16 +207,33 @@ window.onload = function() {
              return d;
          }))
           .enter().insert("rect", ".tick")
-            .attr("height", 8)
+            .attr("height", 10)
+            .attr("y", 12)
             .attr("x", function(d) { return x(d[0]); })
             .attr("width", function(d) { return x(d[1]) - x(d[0]); })
             .attr("fill", function(d) { return colorScale(d[0]); });
+
+        // Add ticks at right position
+        g.selectAll(".tick")
+         .data(colorScale.range().map(function(color) {
+             var d = colorScale.invertExtent(color);
+             if (d[0] == undefined) {
+                 d[0] = x.domain()[0];
+             }
+             if (d[1] == undefined) {
+                 d[1] = x.domain()[1];
+             }
+             return d;
+           }))
+           .attr("transform", function translate(d) {
+               return "translate(" + x(d[1]) + ","+ 12 + ")";
+           });
 
         g.append("text")
             .attr("fill", "#000")
             .attr("font-weight", "bold")
             .attr("text-anchor", "start")
-            .attr("y", -6)
+            .attr("y", 8)
             .text("Health spendings (in % of GDP)");
     }
 
