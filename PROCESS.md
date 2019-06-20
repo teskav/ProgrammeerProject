@@ -86,3 +86,8 @@ I also fixed the tooltip for the pie chart. I still don't really like the style 
 I decided to put the charts next to each other and the legends on the other side of the chart. I thought this was the most clear position.
 
 I also linked the pie charts to the time slider and the map of Europe. Some times it works and some times it doesn't. Also the update function does not work well, since the new charts will appear below the old charts. I will try to fix this tomorrow.
+
+## Day 12 (19-06-2019)
+Today I focussed on fixing the update of the pie charts. I figured out that the structure of my functions and scripts was really unfortunate. So I rearranged my structure of scripts. I got the tip to create a 'main javascript' in which I will call all my other functions.
+
+After I fixed the structure of my scripts I let the update of my pie charts work. I still don't like the transition of the update so I will take a look at this later.
