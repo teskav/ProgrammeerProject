@@ -1,45 +1,15 @@
-function pieCharts(healthSpendings, newYear, country) {
+function pieCharts(dataset, newYear, country) {
 
-    var requests = [d3v5.json("../python/governmentSpendings.json")];
+    // Process data for the pie charts
+    var [pieData, donutData] = process(dataset, newYear, country);
 
-    Promise.all(requests).then(function(response) {
+    // Create the pie chart
+    pieChart(pieData);
+    donutChart(donutData)
 
-        // Add government spendings to dataset
-        healthSpendings = preprocess(response[0], healthSpendings)
-
-        // Process data for the pie charts
-        var [pieData, donutData] = process(healthSpendings, newYear, country);
-
-        // Create the pie chart
-        pieChart(pieData);
-        donutChart(donutData)
-
-    }).catch(function(e){
-        throw(e);
-    });
-
-    function preprocess(data, healthSpendings) {
-
-        // // Set list of years
-        var years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017];
-
-        // Set dataset
-        for (year in years){
-            var YEAR = years[year];
-            Object.values(data).forEach(function(d){
-                if (d["TIME"] == YEAR){
-                    healthSpendings[YEAR][d["LOCATION"]]["governmentSpendings"][d["SUBJECT"]] = d["Value"];
-                };
-
-            });
-        };
-
-        return healthSpendings
-    };
-
-    function process(healthSpendings, newYear, country){
+    function process(dataset, newYear, country){
         // console.log(healthSpendings);
-        var dataset_new = healthSpendings[newYear][country];
+        var dataset_new = dataset[newYear][country];
         console.log(dataset_new);
         var pieData = [];
         var donutData = [];
@@ -91,6 +61,7 @@ function pieCharts(healthSpendings, newYear, country) {
      		          .innerRadius(0)
      		          .outerRadius(radius)
 
+
         // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
         // from Chris Williams’s Block af5b855651ffe29bdca1
         // Add the tooltip container to the body container
@@ -126,12 +97,20 @@ function pieCharts(healthSpendings, newYear, country) {
                     .on("mousemove", tipMouseover)
                     .on("mouseout", tipMouseout);
 
+        // update
+        arcs.transition()
+            .duration(1500)
+            .attrTween("d", arcTween);
+
         //Draw arc paths
         arcs.append("path")
             .attr("fill", function(d) {
                 return colorScale(d.data.label);
             })
-            .attr("d", arc);
+            .attr("d", arc)
+            .each(function(d) { this._current = d; });
+
+        updatePie(svg, )
 
         // Based all legend code on https://codepen.io/thecraftycoderpdx/pen/jZyzKo
         // Legend dimensions
@@ -164,6 +143,7 @@ function pieCharts(healthSpendings, newYear, country) {
               .attr('x', legendRectSize + legendSpacing - 190)
               .attr('y', legendRectSize - legendSpacing)
               .text(function(d) { return keys[d]; });
+
     };
 
     function donutChart(donutData) {
@@ -273,5 +253,17 @@ function pieCharts(healthSpendings, newYear, country) {
               .attr('y', legendRectSize - legendSpacing)
               .text(function(d) { return keys[d]; });
 
+    };
+
+    function updatePie() {
+
+    }
+    function arcTween(a) {
+        console.log(this._current);
+        var i = d3v5.interpolate(this._current, a);
+        this._current = i(0);
+        return function(t) {
+            return arc(i(t));
+      };
     };
 };

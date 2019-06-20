@@ -2,43 +2,10 @@
    Student number: 11046341
    This file............ */
 
-function scatterPlot(healthSpendings) {
+function scatterPlot(dataset) {
 
-    var requests = [d3v5.json("../python/healthvariables.json")];
-
-    Promise.all(requests).then(function(response) {
-
-        // Preprocess the dataset
-        var dataset_scatter = preprocess(response[0], healthSpendings);
-        // console.log("Testhoi:")
-        // console.log(dataset_scatter)
-
-        // Create the scatter plot
-        createScatter(dataset_scatter);
-
-    }).catch(function(e){
-        throw(e);
-    });
-
-    function preprocess(data, healthSpendings) {
-
-        // // Set list of years
-        var years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017];
-
-        // Set dataset
-        for (year in years){
-            var YEAR = years[year];
-            Object.values(data).forEach(function(d){
-                if (d["TIME"] == YEAR){
-                    // checken of het 2017 is (want lifeexp heeft geen data van 2017)
-                    healthSpendings[YEAR][d["LOCATION"]][d["INDICATOR"]] = d["Value"];
-                };
-
-            });
-        };
-
-        return healthSpendings
-    };
+    // Create the scatter plot
+    createScatter(dataset);
 
     function createScatter(dataset_scatter) {
 
