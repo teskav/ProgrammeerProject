@@ -3,23 +3,12 @@
    This file............ */
 
 
-    //
-    //     // Make variable list for the total health spendings
-    //     var healthSpendings = [];
-    //     for (year in dataset){
-    //         for (country in dataset[year]){
-    //             healthSpendings.push(dataset[year][country]["TOT"])
-    //         }
-    //     }
-    //     // console.log(healthSpendings.sort(function(a, b){return b-a}));
-
-
 function timeslider(dataset) {
     // Based all slider code on https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
     // from John Walley’s Block e1d256b81e51da68f7feb632a53c3518
 
     // Set years
-    var dataTime = d3v5.range(0, 18).map(function(d) {
+    var dataTime = d3v5.range(0, 17).map(function(d) {
         return new Date(2000 + d, 10, 3);
     });
 
@@ -43,19 +32,25 @@ function timeslider(dataset) {
                              if (typeof currentCountry === 'undefined') {
                                  currentCountry = 'NLD';
                              }
-                             console.log(currentCountry)
-                             $('#piechart').empty();
-                             pieCharts(dataset, val.getFullYear(), currentCountry);
+                             console.log(currentCountry);
+                             updatePie(dataset, val.getFullYear(), currentCountry);
+                             updateDonut(dataset, val.getFullYear(), currentCountry);
+
                              d3v5.select('p#value-time').text(d3v5.timeFormat('%Y')(val));
+
+                            variable = $('.variable text').html()
+                             $('#scatter').empty();
+                             // console.log($('.variable text').html())
+                             createScatter(dataset, val.getFullYear(), variable);
                          });
 
     // Add slider to svg
     var gTime = d3v5.select('div#slider-time')
                     .append('svg')
-                    .attr('width', 900)
-                    .attr('height', 100)
+                    .attr('width', d3v5.select('#slider-time').node().getBoundingClientRect().width)
+                    .attr('height', 75)
                     .append('g')
-                    .attr('transform', 'translate(250,30)');
+                    .attr('transform', 'translate(12,30)');
 
     // Call the slider
     gTime.call(sliderTime);
@@ -75,10 +70,11 @@ function worldmap(dataset, YEAR) {
         for (country in dataset[year]){
             dataset[year][country]["fillColor"] = colorScale(dataset[year][country]["healthSpendings"]['TOT']);
         }
-    }
+    };
+
     var datamap = dataset[YEAR];
-    // console.log("datamap:")
-    // console.log(datamap)
+
+    console.log(datamap)
     var map = new Datamap({element: document.getElementById("europemap"),
         data: datamap,
         responsive: true,
@@ -113,8 +109,15 @@ function worldmap(dataset, YEAR) {
                 else {
                     console.log('Update pie charts')
                     currentCountry = country;
-                    $('#piechart').empty();
-                    pieCharts(dataset, YEAR, currentCountry);
+                    // Update the pie charts
+                    updatePie(dataset, YEAR, currentCountry);
+                    updateDonut(dataset, YEAR, currentCountry);
+
+                    // Based this highlight code on https://stackoverflow.com/questions/37732166/how-to-make-scatterplot-highlight-data-on-click
+                    // Remove any highlights
+                    d3v3.selectAll('.circle').classed('active', false);
+                    // Select dot in scatter plot of specific country
+                    d3v3.select('.' + currentCountry).classed('active',true);
                 }
             });
         }
@@ -137,7 +140,7 @@ function addLegendMap(colorScale){
                     .tickSize(13)
                     .tickValues(colorScale.domain());
 
-    var g = d3v5.select("#maplegend").append("svg").call(xAxis);
+    var g = d3v5.select("#maplegend").append("svg").attr("height", "50px").call(xAxis);
 
     g.select(".domain")
      .remove();

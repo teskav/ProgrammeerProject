@@ -1,269 +1,440 @@
-function pieCharts(dataset, newYear, country) {
+/* Name: Teska Vaessen
+   Student number: 11046341
+   This file............ */
+
+function processPie(dataset, newYear, country){
+
+    var dataset_new = dataset[newYear][country];
+    console.log(dataset_new);
+    var pieData = [];
+    var donutData = [];
+
+    Object.keys(dataset_new["healthSpendings"]).forEach(function(d){
+        if (d != "TOT"){
+            pieData.push({"label": d, "value": dataset_new["healthSpendings"][d]});
+        }
+    });
+
+    Object.keys(dataset_new["governmentSpendings"]).forEach(function(d){
+        if (d != "TOT"){
+            donutData.push({"label": d, "value": dataset_new["governmentSpendings"][d]});
+        };
+    });
+
+    return [pieData, donutData];
+};
+
+function pieChart(dataset, newYear, country) {
 
     // Process data for the pie charts
-    var [pieData, donutData] = process(dataset, newYear, country);
+    var [pieData, donutData] = processPie(dataset, newYear, country);
 
-    // Create the pie chart
-    pieChart(pieData);
-    donutChart(donutData)
+    // Define list of the keys
+    var keys = {'OOPEXP': "Out-of-Pocket", "COMPULSORY": "Government/Compulsory", 'VOLUNTARY': "Voluntary"};
 
-    function process(dataset, newYear, country){
-        // console.log(healthSpendings);
-        var dataset_new = dataset[newYear][country];
-        console.log(dataset_new);
-        var pieData = [];
-        var donutData = [];
+    // Set width, height and radius
+	var w = 400;
+	var h = 400;
+	var radius = 100;
 
-        Object.keys(dataset_new["healthSpendings"]).forEach(function(d){
-            if (d != "TOT"){
-                pieData.push({"label": d, "value": dataset_new["healthSpendings"][d]});
-            }
-        });
+    // Set the SVG
+    var svg = d3v5.select("#piechart")
+	              .append("svg")
+                  .attr("id", "pie")
+		          .attr("width", "50%")
+		          .attr("height", "400px")
+		          .attr('viewBox','0 0 '+ Math.min(w,h) +' '+ Math.min(w,h) );
 
-        Object.keys(dataset_new["governmentSpendings"]).forEach(function(d){
-            if (d != "TOT"){
-                donutData.push({"label": d, "value": dataset_new["governmentSpendings"][d]});
-            }
-        });
+    // Set g for the pie chart
+    g = svg.append("g").attr("id", "gpie").attr("transform", "translate(" + w / 1.35 + "," + h / 2 + ")");
 
-        return [pieData, donutData];
+    // Define color scale
+	var colorScale = d3v5.scaleOrdinal()
+                	     .domain(Object.keys(keys))
+                		 .range(['#66c2a5','#fc8d62','#8da0cb']);
+
+    // Generate the pie
+    var pie = d3v5.pie().sort(null).value(function(d){ return d["value"]; });
+
+    // Generate the arcs
+ 	var arc = d3v5.arc()
+ 		          .innerRadius(0)
+ 		          .outerRadius(radius);
+
+    // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
+    // from Chris Williams’s Block af5b855651ffe29bdca1
+    // Add the tooltip container to the body container
+    // it's invisible and its position/contents are defined during mouseover
+    var tooltip = d3v5.select("body").append("div")
+                      .attr("class", "tooltip")
+                      .style("opacity", 0);
+
+    // tooltip mousemove event handler
+    var tipMouseover = function(d, i) {
+    var html  = "<span> Exact value: " + d.data.value + "<br> (in % of GDP) </span><br/>";
+        tooltip.html(html)
+               .style("left", (d3v5.event.pageX + 12) + "px")
+               .style("top", (d3v5.event.pageY - 18) + "px")
+               .transition()
+               .duration(200)
+               .style("opacity", .9);
     };
 
-    function pieChart(pieData) {
-        // Define list of the keys
-        var keys = {'OOPEXP': "Out-of-Pocket", "COMPULSORY": "Government/Compulsory", 'VOLUNTARY': "Voluntary"};
+    // tooltip mouseout event handler
+    var tipMouseout = function(d) {
+        tooltip.transition()
+               .duration(300)
+               .style("opacity", 0);
+    };
 
-        // Set width, height and radius
-    	var w = 400
-    	var h = 400
-    	var radius = 100
+    // Generate groups
+    var arcs = g.selectAll("path")
+                .data(pie(pieData))
+                .enter()
+                .append("path")
+                .on("mousemove", tipMouseover)
+                .on("mouseout", tipMouseout)
+                .attr("fill", function(d) {
+                    return colorScale(d.data.label);
+                })
+                .attr("d", arc)
+                .each(function(d) { this._current = d; });
 
-        // Set the SVG
-        var svg = d3v5.select("#piechart")
-		              .append("svg")
-			          .attr("width", "50%")
-			          .attr("height", "400px")
-			          .attr('viewBox','0 0 '+ Math.min(w,h) +' '+ Math.min(w,h) )
+    // Based all legend code on https://codepen.io/thecraftycoderpdx/pen/jZyzKo
+    // Legend dimensions
+    var legendRectSize = 20;
+    var legendSpacing = 5;
 
-        // Set g for the pie chart
-        g = svg.append("g").attr("transform", "translate(" + w / 1.35 + "," + h / 2 + ")");
-
-        // Define color scale
-    	var colorScale = d3v5.scaleOrdinal()
-                    	     .domain(Object.keys(keys))
-                    		 .range(['#66c2a5','#fc8d62','#8da0cb']);
-
-        // Generate the pie
-        var pie = d3v5.pie().sort(null).value(function(d){ return d["value"]; });
-
-        // Generate the arcs
-     	var arc = d3v5.arc()
-     		          .innerRadius(0)
-     		          .outerRadius(radius)
-
-
-        // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
-        // from Chris Williams’s Block af5b855651ffe29bdca1
-        // Add the tooltip container to the body container
-        // it's invisible and its position/contents are defined during mouseover
-        var tooltip = d3v5.select("body").append("div")
-                          .attr("class", "tooltip")
-                          .style("opacity", 0);
-
-        // tooltip mousemove event handler
-        var tipMouseover = function(d, i) {
-        var html  = "<span> Exact value: " + d.data.value + "<br> (in % of GDP) </span><br/>";
-            tooltip.html(html)
-                   .style("left", (d3v5.event.pageX + 12) + "px")
-                   .style("top", (d3v5.event.pageY - 18) + "px")
-                   .transition()
-                   .duration(200)
-                   .style("opacity", .9);
-        };
-
-        // tooltip mouseout event handler
-        var tipMouseout = function(d) {
-            tooltip.transition()
-                   .duration(300)
-                   .style("opacity", 0);
-        };
-
-        // Generate groups
-        var arcs = g.selectAll("arc")
-                    .data(pie(pieData))
+    // Define legend
+    var legend = svg.selectAll('.legend')
+                    .data(colorScale.domain())
                     .enter()
-                    .append("g")
-                    .attr("class", "arc")
-                    .on("mousemove", tipMouseover)
-                    .on("mouseout", tipMouseout);
+                    .append('g')
+                    .attr('class', 'legend')
+                    .attr('transform', function(d, i) {
+                        var height = legendRectSize + legendSpacing;
+                        var offset =  height * colorScale.domain().length / 2;
+                        var horz = 7 * legendRectSize;
+                        var vert = i * height - offset;
+                          return 'translate(' + (horz) + ',' + (vert + 200) + ')';
+                       });
 
-        // update
-        arcs.transition()
-            .duration(1500)
-            .attrTween("d", arcTween);
+    // Adding colored squares to legend
+    legend.append('rect')
+          .attr('width', legendRectSize)
+          .attr('height', legendRectSize)
+          .style('fill', colorScale)
+          .style('stroke', colorScale);
 
-        //Draw arc paths
-        arcs.append("path")
-            .attr("fill", function(d) {
-                return colorScale(d.data.label);
-            })
-            .attr("d", arc)
-            .each(function(d) { this._current = d; });
+    // Adding text to legend
+    legend.append('text')
+          .attr('x', legendRectSize + legendSpacing - 190)
+          .attr('y', legendRectSize - legendSpacing)
+          .text(function(d) { return keys[d]; });
 
-        updatePie(svg, )
+};
 
-        // Based all legend code on https://codepen.io/thecraftycoderpdx/pen/jZyzKo
-        // Legend dimensions
-        var legendRectSize = 20;
-        var legendSpacing = 5;
+function donutChart(dataset, newYear, country) {
 
-        // Define legend
-        var legend = svg.selectAll('.legend')
-                        .data(colorScale.domain())
-                        .enter()
-                        .append('g')
-                        .attr('class', 'legend')
-                        .attr('transform', function(d, i) {
-                            var height = legendRectSize + legendSpacing;
-                            var offset =  height * colorScale.domain().length / 2;
-                            var horz = 7 * legendRectSize;
-                            var vert = i * height - offset;
-                              return 'translate(' + (horz) + ',' + (vert + 200) + ')';
-                           });
+    // Process data for the pie charts
+    var [pieData, donutData] = processPie(dataset, newYear, country);
 
-        // Adding colored squares to legend
-        legend.append('rect')
-              .attr('width', legendRectSize)
-              .attr('height', legendRectSize)
-              .style('fill', colorScale)
-              .style('stroke', colorScale);
+    // Define list of the keys
+    var keys = {'DEF': 'Defence', 'HEALTH': 'Health', "HOUCOMM": "Housing and community amenities", "PUBORD" : "Public order and safety", "ECOAFF": "Economic affairs", "GRALPUBSER": "General public services", "RECULTREL": "Recreation, culture and religion", "SOCPROT": "Social protection", "ENVPROT": "Environmental protection", "EDU": "Education"};
 
-        // Adding text to legend
-        legend.append('text')
-              .attr('x', legendRectSize + legendSpacing - 190)
-              .attr('y', legendRectSize - legendSpacing)
-              .text(function(d) { return keys[d]; });
+    // Set width, height and radius
+	var w = 400
+	var h = 400
+	var radius = 100
+
+    // Set the SVG
+    var svg = d3v5.select("#piechart")
+	              .append("svg")
+                  .attr("id", "donut")
+		          .attr("width", "50%")
+		          .attr("height", "400px")
+		          .attr('viewBox','0 0 '+ Math.min(w,h) +' '+ Math.min(w,h) )
+
+    // Set g for the pie chart
+    g = svg.append("g").attr("id", "gdonut").attr("transform", "translate(" + w / 4 + "," + h / 2 + ")");
+
+    // Define color scale
+	var colorScale = d3v5.scaleOrdinal()
+                	     .domain(Object.keys(keys))
+                		 .range(['#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3','#fdb462','#b3de69','#fccde5','#d9d9d9','#bc80bd']);
+
+    // Generate the pie
+    var pie = d3v5.pie().sort(null).value(function(d){ return d["value"]; });
+
+    // Generate the arcs
+ 	var arc = d3v5.arc()
+ 		          .innerRadius(radius * 0.6)
+ 		          .outerRadius(radius)
+
+    // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
+    // from Chris Williams’s Block af5b855651ffe29bdca1
+    // Add the tooltip container to the body container
+    // it's invisible and its position/contents are defined during mouseover
+    var tooltip = d3v5.select("body").append("div")
+                      .attr("class", "tooltip")
+                      .style("opacity", 0);
+
+    // tooltip mousemove event handler
+    var tipMouseover = function(d) {
+    var html  = "<span> Exact value: " + d.data.value + "<br> (in % of GDP) </span><br/>";
+        tooltip.html(html)
+               .style("left", (d3v5.event.pageX + 12) + "px")
+               .style("top", (d3v5.event.pageY - 18) + "px")
+               .transition()
+               .duration(200)
+               .style("opacity", .9);
 
     };
 
-    function donutChart(donutData) {
+    // tooltip mouseout event handler
+    var tipMouseout = function(d) {
+        tooltip.transition()
+               .duration(300)
+               .style("opacity", 0);
+    };
 
-        // Define list of the keys
-        var keys = {'DEF': 'Defence', 'HEALTH': 'Health', "HOUCOMM": "Housing and community amenities", "PUBORD" : "Public order and safety", "ECOAFF": "Economic affairs", "GRALPUBSER": "General public services", "RECULTREL": "Recreation, culture and religion", "SOCPROT": "Social protection", "ENVPROT": "Environmental protection", "EDU": "Education"};
+    // Generate groups
+    var arcs = g.selectAll("arc")
+                .data(pie(donutData))
+                .enter()
+                .append("g")
+                .attr("class", "arc")
+                .on("mousemove", tipMouseover)
+                .on("mouseout", tipMouseout);
 
-        // Set width, height and radius
-    	var w = 400
-    	var h = 400
-    	var radius = 100
+    // Draw arc paths
+    arcs.append("path")
+        .attr("d", arc)
+        .attr("fill", function(d) {
+            return colorScale(d.data.label); });
 
-        // Set the SVG
-        var svg = d3v5.select("#piechart")
-		              .append("svg")
-			          .attr("width", "50%")
-			          .attr("height", "400px")
-			          .attr('viewBox','0 0 '+ Math.min(w,h) +' '+ Math.min(w,h) )
+    // Based all legend code on https://codepen.io/thecraftycoderpdx/pen/jZyzKo
+    // Legend dimensions
+    var legendRectSize = 20;
+    var legendSpacing = 5;
 
-        // Set g for the pie chart
-        g = svg.append("g").attr("transform", "translate(" + w / 4 + "," + h / 2 + ")");
-
-        // Define color scale
-    	var colorScale = d3v5.scaleOrdinal()
-                    	     .domain(Object.keys(keys))
-                    		 .range(['#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']);
-
-        // Generate the pie
-        var pie = d3v5.pie().sort(null).value(function(d){ return d["value"]; });
-
-        // Generate the arcs
-     	var arc = d3v5.arc()
-     		          .innerRadius(radius * 0.6)
-     		          .outerRadius(radius)
-
-        // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
-        // from Chris Williams’s Block af5b855651ffe29bdca1
-        // Add the tooltip container to the body container
-        // it's invisible and its position/contents are defined during mouseover
-        var tooltip = d3v5.select("body").append("div")
-                          .attr("class", "tooltip")
-                          .style("opacity", 0);
-
-        // tooltip mousemove event handler
-        var tipMouseover = function(d) {
-        var html  = "<span> Exact value: " + d.data.value + "<br> (in % of GDP) </span><br/>";
-            tooltip.html(html)
-                   .style("left", (d3v5.event.pageX + 12) + "px")
-                   .style("top", (d3v5.event.pageY - 18) + "px")
-                   .transition()
-                   .duration(200)
-                   .style("opacity", .9);
-
-        };
-
-        // tooltip mouseout event handler
-        var tipMouseout = function(d) {
-            tooltip.transition()
-                   .duration(300)
-                   .style("opacity", 0);
-        };
-
-        // Generate groups
-        var arcs = g.selectAll("arc")
-                    .data(pie(donutData))
+    // Define legend
+    var legend = svg.selectAll('.legend')
+                    .data(colorScale.domain())
                     .enter()
-                    .append("g")
-                    .attr("class", "arc")
-                    .on("mousemove", tipMouseover)
-                    .on("mouseout", tipMouseout);
+                    .append('g')
+                    .attr('class', 'legend')
+                    .attr('transform', function(d, i) {
+                        var height = legendRectSize + legendSpacing;
+                        var offset =  height * colorScale.domain().length / 2;
+                        var horz = 12 * legendRectSize;
+                        var vert = i * height - offset;
+                          return 'translate(' + (horz) + ',' + (vert + 200) + ')';
+                       });
 
-        // Draw arc paths
-        arcs.append("path")
-            .attr("d", arc)
-            .attr("fill", function(d) {
-                return colorScale(d.data.label); });
+    // Adding colored squares to legend
+    legend.append('rect')
+          .attr('width', legendRectSize)
+          .attr('height', legendRectSize)
+          .style('fill', colorScale)
+          .style('stroke', colorScale);
 
-        // Based all legend code on https://codepen.io/thecraftycoderpdx/pen/jZyzKo
-        // Legend dimensions
-        var legendRectSize = 20;
-        var legendSpacing = 5;
+    // Adding text to legend
+    legend.append('text')
+          .attr('x', legendRectSize + legendSpacing)
+          .attr('y', legendRectSize - legendSpacing)
+          .text(function(d) { return keys[d]; });
 
-        // Define legend
-        var legend = svg.selectAll('.legend')
-                        .data(colorScale.domain())
-                        .enter()
-                        .append('g')
-                        .attr('class', 'legend')
-                        .attr('transform', function(d, i) {
-                            var height = legendRectSize + legendSpacing;
-                            var offset =  height * colorScale.domain().length / 2;
-                            var horz = 12 * legendRectSize;
-                            var vert = i * height - offset;
-                              return 'translate(' + (horz) + ',' + (vert + 200) + ')';
-                           });
+    // Add text to the middle of the donut chart
+    addText(newYear, country);
 
-        // Adding colored squares to legend
-        legend.append('rect')
-              .attr('width', legendRectSize)
-              .attr('height', legendRectSize)
-              .style('fill', colorScale)
-              .style('stroke', colorScale);
+};
 
-        // Adding text to legend
-        legend.append('text')
-              .attr('x', legendRectSize + legendSpacing)
-              .attr('y', legendRectSize - legendSpacing)
-              .text(function(d) { return keys[d]; });
+function updatePie(dataset, newYear, country) {
 
-    };
+    // hier bijvoorbeeld al selecteren dat rusland geen data heeft en dan text weergeven dat er geen data is
+    // Process data for the pie charts
+    var [pieData, donutData] = processPie(dataset, newYear, country);
+    // console.log(pieData)
 
-    function updatePie() {
+    // Define list of the keys
+    var keys = {'OOPEXP': "Out-of-Pocket", "COMPULSORY": "Government/Compulsory", 'VOLUNTARY': "Voluntary"};
 
-    }
-    function arcTween(a) {
-        console.log(this._current);
-        var i = d3v5.interpolate(this._current, a);
-        this._current = i(0);
-        return function(t) {
-            return arc(i(t));
+    // Define color scale
+    var colorScale = d3v5.scaleOrdinal()
+                         .domain(Object.keys(keys))
+                         .range(['#66c2a5','#fc8d62','#8da0cb']);
+
+    // Generate the pie
+    var pie = d3v5.pie().sort(null).value(function(d){ return d["value"]; });
+
+    // Set width, height and radius
+    var w = 400
+    var h = 400
+    var radius = 100
+
+    // Generate the arcs
+    var arc = d3v5.arc()
+                  .innerRadius(0)
+                  .outerRadius(radius);
+
+      // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
+      // from Chris Williams’s Block af5b855651ffe29bdca1
+      // Add the tooltip container to the body container
+      // it's invisible and its position/contents are defined during mouseover
+      var tooltip = d3v5.select("body").append("div")
+                        .attr("class", "tooltip")
+                        .style("opacity", 0);
+
+      // tooltip mousemove event handler
+      var tipMouseover = function(d) {
+      var html  = "<span> Exact value: " + d.data.value + "<br> (in % of GDP) </span><br/>";
+          tooltip.html(html)
+                 .style("left", (d3v5.event.pageX + 12) + "px")
+                 .style("top", (d3v5.event.pageY - 18) + "px")
+                 .transition()
+                 .duration(200)
+                 .style("opacity", .9);
+
       };
-    };
+
+      // tooltip mouseout event handler
+      var tipMouseout = function(d) {
+          tooltip.transition()
+                 .duration(300)
+                 .style("opacity", 0);
+      };
+
+    var svg = d3v5.select("svg#pie").select("g#gpie");
+
+    // Join new data
+    const path = svg.selectAll("path")
+                    .data(pie(pieData));
+    console.log(pieData)
+    // Update existing arcs
+    // path.transition().duration(200).attrTween("d", arcTween);
+
+    // Enter new arcs
+    // path.enter().append("path").merge(path);
+
+    path.exit().remove();
+
+    path.enter().append("path").merge(path)
+        .attr("d", arc)
+        .attr("fill", (d) => colorScale(d.data.label))
+        .on("mousemove", tipMouseover)
+        .on("mouseout", tipMouseout)
+        .each(function(d) { this._current = d; });
+
+    // path.transition().duration(200).attrTween("d", arcTween)
+    // https://stackoverflow.com/questions/43577130/error-path-attribute-d-expected-arc-flag-0-or-1
+};
+
+function updateDonut(dataset, newYear, country) {
+
+    // hier bijvoorbeeld al selecteren dat rusland geen data heeft en dan text weergeven dat er geen data is
+    // Process data for the pie charts
+    var [pieData, donutData] = processPie(dataset, newYear, country);
+    // console.log(pieData)
+
+    // Define list of the keys
+    var keys = {'DEF': 'Defence', 'HEALTH': 'Health', "HOUCOMM": "Housing and community amenities", "PUBORD" : "Public order and safety", "ECOAFF": "Economic affairs", "GRALPUBSER": "General public services", "RECULTREL": "Recreation, culture and religion", "SOCPROT": "Social protection", "ENVPROT": "Environmental protection", "EDU": "Education"};
+
+    // Define color scale
+    var colorScale = d3v5.scaleOrdinal()
+                         .domain(Object.keys(keys))
+                         .range(['#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3','#fdb462','#b3de69','#fccde5','#d9d9d9','#bc80bd']);
+
+    // Generate the pie
+    var pie = d3v5.pie().sort(null).value(function(d){ return d["value"]; });
+
+    // Set width, height and radius
+    var w = 400
+    var h = 400
+    var radius = 100
+
+    // Generate the arcs
+    var arc = d3v5.arc()
+                  .innerRadius(radius * 0.6)
+                  .outerRadius(radius);
+
+      // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
+      // from Chris Williams’s Block af5b855651ffe29bdca1
+      // Add the tooltip container to the body container
+      // it's invisible and its position/contents are defined during mouseover
+      var tooltip = d3v5.select("body").append("div")
+                        .attr("class", "tooltip")
+                        .style("opacity", 0);
+
+      // tooltip mousemove event handler
+      var tipMouseover = function(d) {
+      var html  = "<span> Exact value: " + d.data.value + "<br> (in % of GDP) </span><br/>";
+          tooltip.html(html)
+                 .style("left", (d3v5.event.pageX + 12) + "px")
+                 .style("top", (d3v5.event.pageY - 18) + "px")
+                 .transition()
+                 .duration(200)
+                 .style("opacity", .9);
+
+      };
+
+      // tooltip mouseout event handler
+      var tipMouseout = function(d) {
+          tooltip.transition()
+                 .duration(300)
+                 .style("opacity", 0);
+      };
+
+    var svg = d3v5.select("svg#donut").select("g#gdonut");
+
+    // Join new data
+    const path = svg.selectAll("path")
+                    .data(pie(donutData));
+
+    path.exit().remove();
+
+    path.enter().append("path").merge(path)
+        .attr("d", arc)
+        .attr("fill", (d) => colorScale(d.data.label))
+        .on("mousemove", tipMouseover)
+        .on("mouseout", tipMouseout)
+        .each(function(d) { this._current = d; });
+
+    addText(newYear, country);
+};
+
+function arcTween(a) {
+    console.log(this._current);
+    var i = d3v5.interpolate(this._current, a);
+    this._current = i(0);
+    return function(t) {
+        return arc(i(t));
+  };
+};
+
+function addText(year, country) {
+
+    var svg = d3v5.select("svg#donut")
+
+    svg.selectAll("text.textpie")
+       .remove();
+
+    // Add country in the middle of the donut chart
+    svg.append("text")
+       .attr("class", "textpie")
+       .attr("text-anchor", "middle")
+       .attr('font-size', '1.5em')
+       .attr("x", 0.09 * (d3v5.select('#piechart').node().getBoundingClientRect().width))
+       .attr('y', 200)
+       .text(country);
+
+    // Add year in the middle of the donut chart
+    svg.append("text")
+       .attr("class", "textpie")
+       .attr("text-anchor", "middle")
+       .attr('font-size', '1.2em')
+       .attr("x", 0.09 * (d3v5.select('#piechart').node().getBoundingClientRect().width))
+       .attr('y', 220)
+       .text(year);
+
 };

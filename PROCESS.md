@@ -91,3 +91,26 @@ I also linked the pie charts to the time slider and the map of Europe. Some time
 Today I focussed on fixing the update of the pie charts. I figured out that the structure of my functions and scripts was really unfortunate. So I rearranged my structure of scripts. I got the tip to create a 'main javascript' in which I will call all my other functions.
 
 After I fixed the structure of my scripts I let the update of my pie charts work. I still don't like the transition of the update so I will take a look at this later.
+
+## Day 13 (20-06-2019)
+I worked for a long time today on the transition of the pie charts. Nigel helped me a lot but we could not figure out what is going wrong, so it still does not work. I decided to work on my scatter plot, since I already wasted a lot of time.
+
+I added the drop down menu for the different variables of my scatter plot. I found out that I had no data for any of these variables for the year 2017. So that's why I decided to drop the year 2017, since my storytelling will make no sense for the year 2017 if I can make no scatter plot of those variables.
+
+![Sketch 12](doc/processBook12.PNG)
+
+This is my drop down menu for the scatter plot. The only problem is that I can't save the health variable you choose with the menu. So I can't give the right variable to the time slider, so when I update the year it can't find the right health variable. I will try to fix this tomorrow.
+I also added that when you click on a country dot in the scatter plot, that the piecharts also update. So now you can update the pie charts with the map of Europe and with the scatter plot. This dot also turns bigger when you click on it. When you click on a country in the worldmap, that country in the scatter plot turns big.
+
+## Day 14 (21-06-2019)
+Today I first focused again on the transition of the pie charts. I made the update function work, but it is still not in a nice transformation.
+
+After that I also fixed the drop down menu. Now all my linked views work, so my Beta version is done. I also decided to change the colors of the scatter plot, since now they were the same as my map of Europe. My scatter plot now looks like this:
+
+![Sketch 13](doc/processBook13.PNG)
+
+These colors still match with my map of Europe, but they are not the same.
+
+I also added that you can see the current country and the current year in the donut chart. Now you can only see the country code and not the whole country name. This is because the whole names are not in my dataset. If I have extra time next week, I will try to add these to my dataset with another dataset. But next week I first want to focus on nice transitions.
+
+![Sketch 14](doc/processBook14.PNG)
