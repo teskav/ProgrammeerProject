@@ -312,12 +312,12 @@ function updatePie(dataset, newYear, country) {
                     .data(pie(pieData));
     console.log(pieData)
     // Update existing arcs
-    // path.transition().duration(200).attrTween("d", arcTween);
+    path.transition().duration(750).attrTween("d", arcTween);
 
     // Enter new arcs
     // path.enter().append("path").merge(path);
 
-    path.exit().remove();
+    path.exit().remove().transition().duration(750).attrTween("d", arcTween);
 
     path.enter().append("path").merge(path)
         .attr("d", arc)
@@ -326,7 +326,7 @@ function updatePie(dataset, newYear, country) {
         .on("mouseout", tipMouseout)
         .each(function(d) { this._current = d; });
 
-    // path.transition().duration(200).attrTween("d", arcTween)
+    path.transition().duration(750).attrTween("d", arcTween)
     // https://stackoverflow.com/questions/43577130/error-path-attribute-d-expected-arc-flag-0-or-1
 };
 
@@ -404,6 +404,11 @@ function updateDonut(dataset, newYear, country) {
 };
 
 function arcTween(a) {
+    // Generate the arcs
+    var arc = d3v5.arc()
+                  .innerRadius(0)
+                  .outerRadius(100);
+
     console.log(this._current);
     var i = d3v5.interpolate(this._current, a);
     this._current = i(0);
@@ -438,3 +443,14 @@ function addText(year, country) {
        .text(year);
 
 };
+
+function noDonutData(){
+    var svg = d3v5.select("svg#donut")
+
+    svg.append("text")
+       .attr("class", "textpie")
+       .attr('font-size', '1em')
+       .attr("x", 0.04 * (d3v5.select('#piechart').node().getBoundingClientRect().width))
+       .attr('y', 275)
+       .text("No data available!");
+}

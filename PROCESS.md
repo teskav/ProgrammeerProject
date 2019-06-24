@@ -114,3 +114,10 @@ These colors still match with my map of Europe, but they are not the same.
 I also added that you can see the current country and the current year in the donut chart. Now you can only see the country code and not the whole country name. This is because the whole names are not in my dataset. If I have extra time next week, I will try to add these to my dataset with another dataset. But next week I first want to focus on nice transitions.
 
 ![Sketch 14](doc/processBook14.PNG)
+
+#3 Day 15 (22-06-2019)
+Today I made sure that when you click on a country that has no data available of the government spendings, that the user gets a message that there is no data available. I also rounded the government spendings data up to 3 decimals, since before there were 6 decimals, which is a lot.
+
+I also fixed the transitions of the scatter plot, so now the update of the scatter plot looks nice. Before this I updated the scatter plot by deleting the old scatter plot, and adding a new one. But now it is better.
+
+I got the feedback that I really should add the names of the countries, since it looks nicer than showing the country code. So I downloaded a dataset with the country names and added it to my dataset. Now in the tooltip and pie chart, you can see the name of the whole country, instead of the country code.

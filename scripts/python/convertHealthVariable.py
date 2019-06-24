@@ -29,9 +29,6 @@ def preprocess(df1, df2, df3, df4):
     df2 = df2.rename(index=str, columns={"Value": "Potential years of life lost"})
     df3 = df3.rename(index=str, columns={"Value": "Deaths from cancer"})
     df4 = df4.rename(index=str, columns={"Value": "Infant mortality rate"})
-    # print(df1)
-    # print(df2)
-    # print(df3)
 
     # Merge the dataframes
     df = pd.merge(df1, df2, how='left', on=['LOCATION', 'TIME'])
@@ -56,12 +53,9 @@ if __name__ == "__main__":
     df2 = pd.read_csv(INPUT_CSV2,usecols=["LOCATION", "TIME", "Value"])
     df3 = pd.read_csv(INPUT_CSV3,usecols=["LOCATION", "TIME", "Value"])
     df4 = pd.read_csv(INPUT_CSV4,usecols=["LOCATION", "TIME", "Value"])
-    # print(df2)
+
     # Preprocess the data
     df = preprocess(df1, df2, df3, df4)
-
-    # Add the world average to the dataframe
-    # df = add_average(df)
 
     # Convert data to JSON file
     convert(df)

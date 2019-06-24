@@ -8,27 +8,21 @@ This script converts csv files into a JSON file.
 import pandas as pd
 
 # Global constants for the input and output file
-INPUT_CSV = "health_spendings_all.csv"
+INPUT_CSV = "../data/health_spendings_all.csv"
+INPUT_CSV1 = "../data/country_code.csv"
 # INPUT_CODES = "country_code.csv"
 OUTPUT_JSON = "data.json"
 
-def preprocess(df):
-
-    # Change the order of the columns
-    # columnsTitles=["TIME", "LOCATION", "INDICATOR", "SUBJECT", "Value"]
-    # df = df.reindex(columns=columnsTitles)
-    # print(df)
-
-    # Set year as index
-    # df = df.set_index("TIME")
-
+def preprocess(df1, df2):
 
     # Delete rows with missing values
-    df = df.dropna()
-    #
-    # # Set country as index
-    # df = df.set_index("Code")
+    df1 = df1.dropna()
 
+    # Add country names to dataset
+    df = pd.merge(df1, df2, how='left', left_on='LOCATION', right_on='code_3digit')
+
+    # Drop the extra country codes
+    df = df.drop(["code_3digit"], axis=1)
 
     return df
 
@@ -42,13 +36,11 @@ def convert(df):
 if __name__ == "__main__":
 
     # Load csv file, drop columns you don't use and replace comma's with dots
-    df = pd.read_csv(INPUT_CSV,usecols=["LOCATION","INDICATOR", "SUBJECT", "TIME", "Value"])
-    print(df)
-    # Preprocess the data
-    df = preprocess(df)
+    df1 = pd.read_csv(INPUT_CSV,usecols=["LOCATION","INDICATOR", "SUBJECT", "TIME", "Value"])
+    df2 = pd.read_csv(INPUT_CSV1,usecols=["Country_name","code_3digit"])
 
-    # Add the world average to the dataframe
-    # df = add_average(df)
+    # Preprocess the data
+    df = preprocess(df1, df2)
 
     # Convert data to JSON file
     convert(df)

@@ -31,7 +31,8 @@ function processData(healthSpendings, healthVariables, governmentSpendings) {
                         var variables = {};
                         var spendings = {};
                         var governmentSpendings = {};
-                        variables.country = d["LOCATION"];
+                        variables.country = d["Country_name"];
+                        variables.code = d["LOCATION"]
                         variables.year = d["TIME"];
                         spendings[d["SUBJECT"]] = d["Value"];
                         variables.healthSpendings = spendings;

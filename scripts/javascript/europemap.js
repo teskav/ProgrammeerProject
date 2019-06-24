@@ -22,26 +22,32 @@ function timeslider(dataset) {
                          .tickValues(dataTime)
                          .default(new Date(2000, 10, 3))
                          .on('onchange', val => {
-                             console.log(val.getFullYear());
+
                              // Remove old map of Europe
                              $('#europemap').empty();
                              $('#maplegend').empty();
+
                              // Create new map of Europe
                              worldmap(dataset, val.getFullYear());
+
                              // Set the Netherlands as default country
                              if (typeof currentCountry === 'undefined') {
                                  currentCountry = 'NLD';
                              }
-                             console.log(currentCountry);
+
+                             // Update the pie charts
                              updatePie(dataset, val.getFullYear(), currentCountry);
                              updateDonut(dataset, val.getFullYear(), currentCountry);
+                             // Let user know if there is no data of this country for the donut pie
+                             if (JSON.stringify(dataset[val.getFullYear()][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
+                                 noDonutData();
+                             };
 
                              d3v5.select('p#value-time').text(d3v5.timeFormat('%Y')(val));
 
-                            variable = $('.variable text').html()
-                             $('#scatter').empty();
-                             // console.log($('.variable text').html())
-                             createScatter(dataset, val.getFullYear(), variable);
+                             // Update the scatter plot
+                             variable = $('.variable text').html();
+                             updateScatter(dataset, val.getFullYear(), variable);
                          });
 
     // Add slider to svg
@@ -74,7 +80,6 @@ function worldmap(dataset, YEAR) {
 
     var datamap = dataset[YEAR];
 
-    console.log(datamap)
     var map = new Datamap({element: document.getElementById("europemap"),
         data: datamap,
         responsive: true,
@@ -107,11 +112,14 @@ function worldmap(dataset, YEAR) {
                     alert("This country has no data available. Click on another country.");
                 }
                 else {
-                    console.log('Update pie charts')
                     currentCountry = country;
                     // Update the pie charts
                     updatePie(dataset, YEAR, currentCountry);
                     updateDonut(dataset, YEAR, currentCountry);
+                    // Let user know if there is no data of this country for the donut pie
+                    if (JSON.stringify(dataset[YEAR][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
+                        noDonutData();
+                    };
 
                     // Based this highlight code on https://stackoverflow.com/questions/37732166/how-to-make-scatterplot-highlight-data-on-click
                     // Remove any highlights

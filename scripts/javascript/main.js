@@ -13,9 +13,9 @@ window.onload = function() {
         d3v5.selectAll(".m")
     	    .on("click", function() {
                 var variable = this.getAttribute("value");
-                // Create the scatter plot
-                $('#scatter').empty();
-                createScatter(dataset, $('.slider .parameter-value text').html(), variable);
+                
+                // Update the scatter plot
+                updateScatter(dataset, $('.slider .parameter-value text').html(), variable);
 
             });
 
