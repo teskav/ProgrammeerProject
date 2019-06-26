@@ -1,4 +1,9 @@
+/* Name: Teska Vaessen
+   Student number: 11046341
+   This file includes functions to create the whole dataset for this project. */
+
 function processData(healthSpendings, healthVariables, governmentSpendings) {
+    /* This function creates the whole dataset for this project. */
 
     // Create dataset with the health spendings
     var dataset = healthspendings(healthSpendings);
@@ -8,10 +13,11 @@ function processData(healthSpendings, healthVariables, governmentSpendings) {
 
     // Add the goverment spendings to the dataset
     dataset = governmentspendings(governmentSpendings, dataset);
-    console.log(dataset)
+
     return dataset;
 
     function healthspendings(data) {
+        /* This function adds the health spendings to the dataset. */
 
         // Set variable for map data
         var dataset = {};
@@ -19,18 +25,23 @@ function processData(healthSpendings, healthVariables, governmentSpendings) {
         for (year in years){
             var YEAR = years[year];
             dataset[YEAR] = {};
-        }
+        };
 
         // Set dataset
         for (year in years){
             var YEAR = years[year];
             Object.values(data).forEach(function(d){
                 if (d["TIME"] == YEAR){
-                    // checken of land al in de dictionairy staat dan dit doen
+
+                    // Check if country already in dictionary
                     if (!(d["LOCATION"] in dataset[YEAR])){
+
+                        // Set empty dictionaries
                         var variables = {};
                         var spendings = {};
                         var governmentSpendings = {};
+
+                        // Add variables to dictionaries
                         variables.country = d["Country_name"];
                         variables.code = d["LOCATION"]
                         variables.year = d["TIME"];
@@ -42,42 +53,50 @@ function processData(healthSpendings, healthVariables, governmentSpendings) {
                         variables["Deaths from cancer"] = null;
                         variables["Infant mortality rate"] = null;
 
+                        // Add variables to dataset
                         dataset[YEAR][d["LOCATION"]] = variables;
                     }
                     else {
+
+                        // Add variables to dataset
                         dataset[YEAR][d["LOCATION"]].healthSpendings[d["SUBJECT"]] = d["Value"];
                     };
                 };
             });
         };
-        // console.log(dataset);
-        return dataset
+
+        return dataset;
+
     };
 
     function healthvariables(healthVariables, dataset) {
+        /* This function adds the different kind of health variables to
+           the dataset. */
 
         // // Set list of years
         var years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016];
-        // console.log(healthVariables)
+
         // Set dataset
         for (year in years){
             var YEAR = years[year];
             Object.values(healthVariables).forEach(function(d){
-                // console.log(healthVariables)
                 if (d["TIME"] == YEAR){
+
+                    // Add variables to the dataset at the right country and year
                     dataset[YEAR][d["LOCATION"]]["Life expectancy"] = d["Life expectancy"];
                     dataset[YEAR][d["LOCATION"]]["Potential years of life lost"] = d["Potential years of life lost"];
                     dataset[YEAR][d["LOCATION"]]["Deaths from cancer"] = d["Deaths from cancer"];
                     dataset[YEAR][d["LOCATION"]]["Infant mortality rate"] = d["Infant mortality rate"];
                 };
-
             });
         };
 
         return dataset;
+
     };
 
     function governmentspendings(governmentSpendings, dataset) {
+        /* This function adds the government spendings to the dataset. */
 
         // // Set list of years
         var years = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016];
@@ -87,12 +106,15 @@ function processData(healthSpendings, healthVariables, governmentSpendings) {
             var YEAR = years[year];
             Object.values(governmentSpendings).forEach(function(d){
                 if (d["TIME"] == YEAR){
+
+                    // Add variable to the dataseet
                     dataset[YEAR][d["LOCATION"]]["governmentSpendings"][d["SUBJECT"]] = d["Value"];
                 };
-
             });
         };
 
         return dataset;
+
     };
-}
+
+};

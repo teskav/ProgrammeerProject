@@ -2,7 +2,7 @@
 # Name: Teska Vaessen
 # Student number: 11046341
 """
-This script converts csv files into a JSON file.
+This script converts a csv files about health spendings into a JSON file.
 """
 
 import pandas as pd
@@ -10,7 +10,6 @@ import pandas as pd
 # Global constants for the input and output file
 INPUT_CSV = "../data/health_spendings_all.csv"
 INPUT_CSV1 = "../data/country_code.csv"
-# INPUT_CODES = "country_code.csv"
 OUTPUT_JSON = "../data/data.json"
 
 def preprocess(df1, df2):
@@ -21,7 +20,7 @@ def preprocess(df1, df2):
     # Add country names to dataset
     df = pd.merge(df1, df2, how='left', left_on='LOCATION', right_on='code_3digit')
 
-    # Drop the extra country codes
+    # Drop the column with extra country codes
     df = df.drop(["code_3digit"], axis=1)
 
     return df

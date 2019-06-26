@@ -1,18 +1,18 @@
 /* Name: Teska Vaessen
 Student number: 11046341
-This file............ */
+This file includes functions to create and update the scatter plot. */
 
-function createScatter(dataset_scatter, YEAR, healthvariable) {
+function createScatter(dataset, YEAR, healthvariable) {
+    /* This function creates the default scatter plot. */
 
-    // Make variable list for to calculate max and min
+    // Make variable list to calculate max and min of variables
     var healthSpendings = [];
     var healthVariable = [];
-    for (country in dataset_scatter[YEAR]){
-        healthSpendings.push(dataset_scatter[YEAR][country]['healthSpendings']["TOT"]);
-        if (!(dataset_scatter[YEAR][country][healthvariable] === null)){
-            healthVariable.push(dataset_scatter[YEAR][country][healthvariable]);
+    for (country in dataset[YEAR]){
+        healthSpendings.push(dataset[YEAR][country]['healthSpendings']["TOT"]);
+        if (!(dataset[YEAR][country][healthvariable] === null)){
+            healthVariable.push(dataset[YEAR][country][healthvariable]);
         };
-
     };
 
     // Calculate maximums for the domain
@@ -22,7 +22,7 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
     // Define variables for SVG and create SVG element
     var svgWidth = d3v5.select('#scatter').node().getBoundingClientRect().width;
     var svgHeight = 350;
-    var margin = {top: 50, right: 30, bottom: 20, left: 73};
+    var margin = {top: 45, right: 30, bottom: 20, left: 73};
     var svg = d3v5.select("#scatter")
                   .append("svg")
                   .attr("id", "scatter")
@@ -30,13 +30,13 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
                   .attr("height", svgHeight);
 
     // Set the new dataset with the right year (make a copy so that it does not delete it in the real dataset)
-    var dataset_new =  $.extend( {}, dataset_scatter[YEAR] );
+    var datasetNew =  $.extend( {}, dataset[YEAR] );
 
     // Delete rows with missing value of health variable
-    Object.values(dataset_new).forEach(function(d) {
+    Object.values(datasetNew).forEach(function(d) {
         if (d[healthvariable] == null){
-            delete dataset_new[d['code']];
-        }
+            delete datasetNew[d['code']];
+        };
     });
 
     // Define xScale
@@ -49,7 +49,8 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
                      .domain([0, maxVariable])
                      .range([svgHeight - margin.top, margin.bottom]);
 
-    var dataset_new2 = d3v5.entries(dataset_new)
+    // Make dataset in the right format for scatter plot
+    var datasetNew2 = d3v5.entries(datasetNew);
 
     // Set color scale for the color of the dots
     var colorScale = d3v5.scaleQuantize()
@@ -58,13 +59,14 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
 
     // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
     // from Chris Williams’s Block af5b855651ffe29bdca1
+
     // Add the tooltip container to the body container
     // it's invisible and its position/contents are defined during mouseover
     var tooltip = d3v5.select("body").append("div")
                       .attr("class", "tooltip")
                       .style("opacity", 0);
 
-    // tooltip mouseover event handler
+    // Tooltip mouseover event handler
     var tipMouseover = function(d) {
     var color = colorScale(d['value']['healthSpendings']['COMPULSORY']);
     var html  = "<span style='color:" + color + ";'> Country: " + d['value']['country'] + "<br>" + healthvariable + ": " + d['value'][healthvariable] + "<br> Government health spendings: " +  d['value']["healthSpendings"]["COMPULSORY"] +"</span>";
@@ -74,11 +76,10 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
             .style("top", (d3v5.event.pageY - 18) + "px")
             .transition()
             .duration(200)
-            .style("opacity", .9)
-
+            .style("opacity", .9);
     };
 
-    // tooltip mouseout event handler
+    // Tooltip mouseout event handler
     var tipMouseout = function(d) {
         tooltip.transition()
                .duration(300)
@@ -87,7 +88,7 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
 
     // Create the dots
     svg.selectAll(".circle")
-       .data(dataset_new2)
+       .data(datasetNew2)
        .enter()
        .append("circle")
        .attr("class", function(d) { return d.key + " circle"; })
@@ -102,39 +103,46 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
        .on("mouseover", tipMouseover)
        .on("mouseout", tipMouseout)
        .on("click", function(d) {
+
            // Set new current country
            currentCountry = d.key;
 
            // Based this highlight code on https://stackoverflow.com/questions/37732166/how-to-make-scatterplot-highlight-data-on-click
            // Remove any highlights
            d3v3.selectAll('.circle').classed('active', false);
+
            // Select dot in scatter plot of specific country
            d3v3.select('.' + currentCountry).classed('active',true);
-           updatePie(dataset_scatter, $('.slider .parameter-value text').html(), currentCountry);
-           updateDonut(dataset_scatter, $('.slider .parameter-value text').html(), currentCountry);
+
+           // Update the pie chart and the donut chart with new country
+           updatePie(dataset, $('.slider .parameter-value text').html(), currentCountry);
+           updateDonut(dataset, $('.slider .parameter-value text').html(), currentCountry);
+
            // Let user know if there is no data of this country for the donut pie
-           if (JSON.stringify(dataset_scatter[$('.slider .parameter-value text').html()][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
+           if (JSON.stringify(dataset[$('.slider .parameter-value text').html()][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
                noDonutData();
            };
        });
 
+    // Create the axes, the color legend and the title and labels
     createAxes(xScale, yScale, svgHeight, margin, svg);
     addLegend(colorScale, margin, svg);
     createLabels(svg, svgWidth, svgHeight, margin, healthvariable);
 
 }
 
-function updateScatter(dataset_scatter, YEAR, healthvariable) {
+function updateScatter(dataset, YEAR, healthvariable) {
+    /* This function updates the scatter plot with a new year or a new variable
+       for the y-axis. */
 
     // Make variable list for to calculate max and min
     var healthSpendings = [];
     var healthVariable = [];
-    for (country in dataset_scatter[YEAR]){
-        healthSpendings.push(dataset_scatter[YEAR][country]['healthSpendings']["TOT"]);
-        if (!(dataset_scatter[YEAR][country][healthvariable] === null)){
-            healthVariable.push(dataset_scatter[YEAR][country][healthvariable]);
+    for (country in dataset[YEAR]){
+        healthSpendings.push(dataset[YEAR][country]['healthSpendings']["TOT"]);
+        if (!(dataset[YEAR][country][healthvariable] === null)){
+            healthVariable.push(dataset[YEAR][country][healthvariable]);
         };
-
     };
 
     // Calculate maximums for the domain
@@ -144,20 +152,19 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
     // Define variables for SVG and create SVG element
     var svgWidth = d3v5.select('#scatter').node().getBoundingClientRect().width;
     var svgHeight = 350;
-    var margin = {top: 50, right: 30, bottom: 20, left: 73};
-    var svg = d3v5.select("svg#scatter")
+    var margin = {top: 45, right: 30, bottom: 20, left: 73};
+    var svg = d3v5.select("svg#scatter");
 
     // Set the new dataset with the right year (make a copy so that it does not delete it in the real dataset)
-    var dataset_new =  $.extend( {}, dataset_scatter[YEAR] );
-    // console.log(dataset_scatter)
+    var datasetNew =  $.extend( {}, dataset[YEAR] );
 
     // Delete rows with missing value of health variable
-    Object.values(dataset_new).forEach(function(d) {
+    Object.values(datasetNew).forEach(function(d) {
         if (d[healthvariable] == null){
-            delete dataset_new[d['code']];
-        }
+            delete datasetNew[d['code']];
+        };
     });
-    console.log(dataset_scatter)
+
     // Define new xScale
     var xScale = d3v5.scaleLinear()
                      .domain([0, maxSpendings])
@@ -168,7 +175,7 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
                      .domain([0, maxVariable])
                      .range([svgHeight - margin.top, margin.bottom]);
 
-    var dataset_new2 = d3v5.entries(dataset_new)
+    var datasetNew2 = d3v5.entries(datasetNew);
 
     // Set color scale for the color of the dots
     var colorScale = d3v5.scaleQuantize()
@@ -177,6 +184,7 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
 
     // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
     // from Chris Williams’s Block af5b855651ffe29bdca1
+
     // Add the tooltip container to the body container
     // it's invisible and its position/contents are defined during mouseover
     var tooltip = d3v5.select("div.tooltip");
@@ -194,7 +202,7 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
             .style("opacity", .9)
     };
 
-    // tooltip mouseout event handler
+    // Tooltip mouseout event handler
     var tipMouseout = function(d) {
         tooltip.transition()
                .duration(300)
@@ -203,22 +211,28 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
 
     // Create the dots
     svg.selectAll(".circle")
-       .data(dataset_new2)
+       .data(datasetNew2)
        .enter().append("circle").merge(svg.selectAll(".circle"))
        .attr("class", function(d) { return d.key + " circle"; })
        .on("click", function(d) {
+
            // Set new current country
            currentCountry = d.key;
 
            // Based this highlight code on https://stackoverflow.com/questions/37732166/how-to-make-scatterplot-highlight-data-on-click
-           // Remove any highlights
+
+           // Remove any old highlights
            d3v3.selectAll('.circle').classed('active', false);
+
            // Select dot in scatter plot of specific country
            d3v3.select('.' + currentCountry).classed('active',true);
-           updatePie(dataset_scatter, $('.slider .parameter-value text').html(), currentCountry);
-           updateDonut(dataset_scatter, $('.slider .parameter-value text').html(), currentCountry);
+
+           // Update the pie and donut chart
+           updatePie(dataset, $('.slider .parameter-value text').html(), currentCountry);
+           updateDonut(dataset, $('.slider .parameter-value text').html(), currentCountry);
+
            // Let user know if there is no data of this country for the donut pie
-           if (JSON.stringify(dataset_scatter[$('.slider .parameter-value text').html()][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
+           if (JSON.stringify(dataset[$('.slider .parameter-value text').html()][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
                noDonutData();
            }
        })
@@ -235,15 +249,16 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
         })
        .style("fill", function(d, i ) { return colorScale(d['value']['healthSpendings']['COMPULSORY']); });
 
-    svg.selectAll(".circle").data(dataset_new2).exit().remove();
+    svg.selectAll(".circle").data(datasetNew2).exit().remove();
 
+    // Update the axes and the title and the labels
     updateAxes(xScale, yScale, svgHeight, margin, svg);
-    addLegend(colorScale, margin, svg);
     createLabels(svg, svgWidth, svgHeight, margin, healthvariable);
 
 }
 
 function createAxes(xScale, yScale, svgHeight, margin, svg) {
+    /* This function creates the axes of the default scatter plot. */
 
     // Create x axis
     var xAxis = d3v5.axisBottom(xScale);
@@ -262,10 +277,13 @@ function createAxes(xScale, yScale, svgHeight, margin, svg) {
        .attr("id", "y-axis")
        .attr("transform", "translate(" + margin.left + ", 0)")
        .call(yAxis);
+
 };
 
 function updateAxes(xScale, yScale, svgHeight, margin, svg){
-    // Create x axis
+    /* This function updates the axes of the scatter plot. */
+
+    // Update x axis
     var xAxis = d3v5.axisBottom(xScale);
 
     svg.select("#x-axis")
@@ -273,16 +291,18 @@ function updateAxes(xScale, yScale, svgHeight, margin, svg){
        .duration(1000)
        .call(xAxis);
 
-    // Create y axis
+    // Update y axis
     var yAxis = d3v5.axisLeft(yScale).tickFormat(d3v5.format(".2s"));
 
     svg.select("#y-axis")
        .transition()
        .duration(1000)
        .call(yAxis);
+
 };
 
 function addLegend(colorScale, margin, svg) {
+    /* This function adds the legend of the color scale of the scatter plot. */
 
     // Remove old legend
     svg.select("g.legend")
@@ -292,6 +312,7 @@ function addLegend(colorScale, margin, svg) {
 
     // Based all legend code on https://bl.ocks.org/zanarmstrong/0b6276e033142ce95f7f374e20f1c1a7
     // from zan’s Block 0b6276e033142ce95f7f374e20f1c1a7
+
     // Set legend for the color of the dots
     var colorLegend = d3v5.legendColor()
                           .labelFormat(d3v5.format(".0f"))
@@ -316,9 +337,11 @@ function addLegend(colorScale, margin, svg) {
        .style("font-weight", "bold")
        .style("font-size", "10px")
        .text("Government health spendings (in % of GDP)");
+
 };
 
 function createLabels(svg, svgWidth, svgHeight, margin, healthvariable) {
+    /* This function creates the titles and labels of the scatter plot. */
 
     // Remove the old titles
     svg.selectAll("text.title")
@@ -356,4 +379,5 @@ function createLabels(svg, svgWidth, svgHeight, margin, healthvariable) {
        .attr('y', 9)
        .attr('text-anchor', 'middle')
        .text('Relationship health spendings and '+ healthvariable);
+
 };

@@ -2,7 +2,7 @@
 # Name: Teska Vaessen
 # Student number: 11046341
 """
-This script converts csv files into a JSON file.
+This script converts a csv file about government spendings into a JSON file.
 """
 
 import pandas as pd
