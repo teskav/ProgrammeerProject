@@ -109,9 +109,14 @@ function worldmap(dataset, YEAR) {
                     alert("This country has no data available. Click on another country.");
                 }
                 else {
+                    // selectCountry(currentCountry);
+                    // d3v5.selectAll('.path').classed('active', false);
+                    // d3v3.select('.' + currentCountry).classed('active',true);
+
                     // Update the pie charts
                     updatePie(dataset, $('.slider .parameter-value text').html(), currentCountry);
                     updateDonut(dataset, $('.slider .parameter-value text').html(), currentCountry);
+
                     // Let user know if there is no data of this country for the donut pie
                     if (JSON.stringify(dataset[$('.slider .parameter-value text').html()][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
                         noDonutData();
