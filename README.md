@@ -36,4 +36,4 @@ All the visualizations update when you change the year with the time slider.
 #### Explanation
 When you click on the Explanation tab in the menu, you get more information about the story telling and the different kind of variables and the data.
 
-![Sketch 4](doc/README4.png)
+![Sketch 4](doc/README4.PNG)
