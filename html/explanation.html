@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Teska Vaessen (11046341)</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <style>
+
+  </style>
+</head>
+<body>
+
+<div class="jumbotron text-center" style="margin-bottom:0">
+  <h1>Explanation</h1>
+</div>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Health</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="index.html"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+        <li><a href="visualization.html"><span class="glyphicon glyphicon-stats"></span> Visualization</a></li>
+        <li class="active"><a href="explanation.html"><span class="glyphicon glyphicon-info-sign"></span> Explanation</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <h2>Health Spendings in European countries</h2>
+      <p>Some countries in Europe spend more money on health than other countries. Besides that, some countries make health insurance compulsory for their citizens, while other countries don't. But how much do the health spendings effect the health status of a country? The visualizations at this website should help the government of European countries to see if they should spend more money on health.</p>
+      <p>With the <a href="visualization.html"></span>visualizations</a> at this website a country should be able to see if the citizens in their country are healthy compared to other countries and if there is room for improvement. When they need improvement they can see on which specific health problem they should spend more money on and also where they can cut down the money from.</p>
+      <h3>Data</h3>
+      <p>Obtained all the data from OECD.</p>
+      <ul class="nav nav-pills nav-stacked">
+        <li><a href="https://data.oecd.org/healthres/health-spending.htm">Health Spendings</a></li>
+        <li><a href="https://data.oecd.org/gga/general-government-spending.htm#indicator-chart">Government Spendings</a></li>
+        <li><a href="https://data.oecd.org/healthstat/life-expectancy-at-birth.htm">Life expectancy</a></li>
+        <li><a href="https://data.oecd.org/healthstat/potential-years-of-life-lost.htm">Potential years of life lost</a></li>
+        <li><a href="https://data.oecd.org/healthstat/deaths-from-cancer.htm">Deaths from cancer</a></li>
+        <li><a href="https://data.oecd.org/healthstat/infant-mortality-rates.htm">Infant mortality rate</a></li>
+      </ul>
+      <hr class="hidden-sm hidden-md hidden-lg">
+    </div>
+    <div class="col-sm-8">
+      <h2>Scatter plots</h2>
+      <h5><i>Relationship between the health spendings and different health statistics</i></h5>
+      <p>To solve the problem the visualizations starts with the most important question: How much effect does health spendings have at the health of the citizens of a country? In the scatter plots this relationship is visualized between <b>health spendings</b> and 4 different health statistics: <b>life expectancy</b>, <b>potential years of life lost</b>, <b>deaths from cancer</b> and <b>infant mortality rate</b>. These variables are on the y-axis. On the x-axis you can see the <b>total health spendings in % of the GDP</b> of that country. The color of the dots is determined by how many percent of the total health spendings come from the <b>government</b>. For the y-axis you can choose between the different variables with a drop-down menu.</p>
+      <p>The different variables in the scatter plot are:</p>
+      <ul>
+        <li><b>Health spendings</b> in % of GDP<br></li>
+        <li><b>Health spendings from the government</b> in % of GDP</li>
+        <li><b>Life expectancy</b> measured in years (how long, on average, a newborn can expect to live, if current death rates do not change)</li>
+        <li><b>Potential years of life</b> lost measured in years lost per 100 000 inhabitants</li>
+        <li><b>Deaths from cancer</b> measured per 100 000 inhabitants</li>
+        <li><b>Infant mortality rate</b> defined as the number of deaths of children under one year of age, expressed per 1 000 live births</li>
+      </ul>
+      <p>More information about these variables you can find through the links on the left of this website.</p>
+      <br>
+      <h2>Map of Europe</h2>
+      <h5><i>Total health spendings in a country</i></h5>
+      <p>After we determined the relationship between health spendings and the health statistics, it is time to get more insight in the spendings of a country. How much does a country already spend on health and is there even a possibility to spend more on health?
+      <br>To get the answer to this question there is first a map of Europe where you can see how much a country spends on health (in % of GDP). How darker the color is, the more this country spends on total on health. When you click on a country, you get more insight in the specifics of the spendings. For this see <b>Pie chart and donut chart</b>.
+      </p>
+      <br>
+      <h2>Pie chart and donut chart</h2>
+      <h5><i>Insights in the spendings of a country</i></h5>
+      <p>To get more insights in the spendings of a country, the distribution of the health spendings and the distribution of the total spendings is visualized in the donut chart and the pie chart. </p>
+      <p>In the donut you can see how much from the total health spendings comes from the government. With this information, you know if the government already spends a big part or not. The variables at this chart are in <b>% of the GDP</b>.</p>
+      <p>In the pie chart you can see to which sectors the government spends their money. This variable is also in <b>% of the GDP</b>. With this information you can see if the government already spends a big part of their money to health or not. Besides that, if the government does not spend enough and the health is not good in that country, you can see from which sector the government can cut down the money.</p>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron text-center" style="margin-bottom:0">
+  <p>Teska Vaessen</p>
+  <span>11046341</span><br>
+  <span>Minor Programming (Summer 2019)</span><br>
+  <span>University of Amsterdam</span>
+</div>
+
+</body>
+</html>

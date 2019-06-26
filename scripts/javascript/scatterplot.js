@@ -22,7 +22,7 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
     // Define variables for SVG and create SVG element
     var svgWidth = d3v5.select('#scatter').node().getBoundingClientRect().width;
     var svgHeight = 350;
-    var margin = {top: 45, right: 30, bottom: 20, left: 73};
+    var margin = {top: 50, right: 30, bottom: 20, left: 73};
     var svg = d3v5.select("#scatter")
                   .append("svg")
                   .attr("id", "scatter")
@@ -144,7 +144,7 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
     // Define variables for SVG and create SVG element
     var svgWidth = d3v5.select('#scatter').node().getBoundingClientRect().width;
     var svgHeight = 350;
-    var margin = {top: 45, right: 30, bottom: 20, left: 73};
+    var margin = {top: 50, right: 30, bottom: 20, left: 73};
     var svg = d3v5.select("svg#scatter")
 
     // Set the new dataset with the right year (make a copy so that it does not delete it in the real dataset)
@@ -244,6 +244,7 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
 }
 
 function createAxes(xScale, yScale, svgHeight, margin, svg) {
+
     // Create x axis
     var xAxis = d3v5.axisBottom(xScale);
 
@@ -282,6 +283,7 @@ function updateAxes(xScale, yScale, svgHeight, margin, svg){
 };
 
 function addLegend(colorScale, margin, svg) {
+
     // Remove old legend
     svg.select("g.legend")
        .remove();
@@ -351,7 +353,7 @@ function createLabels(svg, svgWidth, svgHeight, margin, healthvariable) {
        .attr("font-size", "12px")
        .attr("font-weight", "bold")
        .attr('x', (svgWidth + margin.left + 10) / 2)
-       .attr('y', 10)
+       .attr('y', 9)
        .attr('text-anchor', 'middle')
        .text('Relationship health spendings and '+ healthvariable);
 };

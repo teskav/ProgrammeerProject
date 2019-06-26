@@ -50,7 +50,7 @@ function timeslider(dataset, map) {
     // Add slider to svg
     var gTime = d3v5.select('div#slider-time')
                     .append('svg')
-                    .attr('width', d3v5.select('#slider-time').node().getBoundingClientRect().width)
+                    .attr('width', 0.7 * d3v5.select('#slider-time').node().getBoundingClientRect().width)
                     .attr('height', 75)
                     .append('g')
                     .attr('transform', 'translate(12,30)');
@@ -58,7 +58,7 @@ function timeslider(dataset, map) {
     // Call the slider
     gTime.call(sliderTime);
 
-    d3v5.select('p#value-time').text(d3v5.timeFormat('%Y')(sliderTime.value()));
+    d3v5.select('p#value-time').style("font-size","40px").text(d3v5.timeFormat('%Y')(sliderTime.value()));
 };
 
 function worldmap(dataset, YEAR) {
