@@ -1,6 +1,6 @@
 window.onload = function() {
 
-    var requests = [d3v5.json("../data/data.json"), d3v5.json("../data/healthvariables.json"), d3v5.json("../data/governmentSpendings.json")];
+    var requests = [d3v5.json("../scripts/data/data.json"), d3v5.json("../scripts/data/healthvariables.json"), d3v5.json("../scripts/data/governmentSpendings.json")];
 
     // python -m http.server 8888 &
     Promise.all(requests).then(function(response) {
