@@ -13,21 +13,21 @@ Some countries in Europe spend more money on health than other countries. Beside
 #### Homepage
 When you come on my website, you start at my homepage.
 
-![Sketch 1](doc/README1.png)
+![Sketch 1](doc/README1.PNG)
 
 Here there is an introduction to the problem
 
 #### Visualization
 When you click on Visualization in the menu, you come at the visualization page.
 
-![Sketch 2](doc/README2.png)
+![Sketch 2](doc/README2.PNG)
 
 On top you can see the time slider. With this you can choose between different years from 2000 to 2016 for all the different visualizations.<br>
 Below that, you can see the scatter plot. <br>
 Below the time slider, on the left, you see the scatter plot. With a drop down menu you can choose the variable for the y-axis.<br>
 Next to the scatter plot there is the map of Europe, which shows in the colours of the country the health spendings of that country. When you click on a country in the map, the dot in the scatter plot of that country turns bigger.
 
-![Sketch 3](doc/README3.png)
+![Sketch 3](doc/README3.PNG)
 
 Below the scatter plot and the map, there are the pie chart and the donut chart. These charts update by clicking on a country in either the scatter plot or in the map.
 
