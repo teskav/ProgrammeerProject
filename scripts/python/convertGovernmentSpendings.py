@@ -8,8 +8,8 @@ This script converts csv files into a JSON file.
 import pandas as pd
 
 # Global constants for the input and output file
-INPUT_CSV = "government_spendings.csv"
-OUTPUT_JSON = "governmentSpendings.json"
+INPUT_CSV = "../data/government_spendings.csv"
+OUTPUT_JSON = "../data/governmentSpendings.json"
 
 def preprocess(df):
 

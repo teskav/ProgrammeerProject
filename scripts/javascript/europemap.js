@@ -3,7 +3,7 @@
    This file............ */
 
 
-function timeslider(dataset) {
+function timeslider(dataset, map) {
     // Based all slider code on https://bl.ocks.org/johnwalley/e1d256b81e51da68f7feb632a53c3518
     // from John Walley’s Block e1d256b81e51da68f7feb632a53c3518
 
@@ -23,12 +23,8 @@ function timeslider(dataset) {
                          .default(new Date(2000, 10, 3))
                          .on('onchange', val => {
 
-                             // Remove old map of Europe
-                             $('#europemap').empty();
-                             $('#maplegend').empty();
-
-                             // Create new map of Europe
-                             worldmap(dataset, val.getFullYear());
+                             // Update the map of Europe
+                             updateMap(dataset, val.getFullYear(), map);
 
                              // Set the Netherlands as default country
                              if (typeof currentCountry === 'undefined') {
@@ -48,6 +44,7 @@ function timeslider(dataset) {
                              // Update the scatter plot
                              variable = $('.variable text').html();
                              updateScatter(dataset, val.getFullYear(), variable);
+                             console.log(dataset)
                          });
 
     // Add slider to svg
@@ -78,7 +75,8 @@ function worldmap(dataset, YEAR) {
         }
     };
 
-    var datamap = dataset[YEAR];
+    // var datamap = dataset[YEAR];
+    var datamap = $.extend( {}, dataset[YEAR] );
 
     var map = new Datamap({element: document.getElementById("europemap"),
         data: datamap,
@@ -106,18 +104,16 @@ function worldmap(dataset, YEAR) {
             },
         done: function(data) {
             data.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-                country = geography.id;
-                console.log(country);
-                if (datamap[country] == undefined) {
+                currentCountry = geography.id;
+                if (datamap[currentCountry] == undefined) {
                     alert("This country has no data available. Click on another country.");
                 }
                 else {
-                    currentCountry = country;
                     // Update the pie charts
-                    updatePie(dataset, YEAR, currentCountry);
-                    updateDonut(dataset, YEAR, currentCountry);
+                    updatePie(dataset, $('.slider .parameter-value text').html(), currentCountry);
+                    updateDonut(dataset, $('.slider .parameter-value text').html(), currentCountry);
                     // Let user know if there is no data of this country for the donut pie
-                    if (JSON.stringify(dataset[YEAR][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
+                    if (JSON.stringify(dataset[$('.slider .parameter-value text').html()][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
                         noDonutData();
                     };
 
@@ -133,7 +129,19 @@ function worldmap(dataset, YEAR) {
     $(window).on('resize', function() {
         map.resize();
     });
+
     addLegendMap(colorScale);
+
+    return map
+};
+
+function updateMap(dataset, YEAR, map){
+
+    // Set new dataset with new year
+    var datamap = $.extend( {}, dataset[YEAR] );
+
+    // Update the data of the map with new year
+    map.updateChoropleth(datamap)
 };
 
 function addLegendMap(colorScale){

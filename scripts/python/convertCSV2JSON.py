@@ -11,7 +11,7 @@ import pandas as pd
 INPUT_CSV = "../data/health_spendings_all.csv"
 INPUT_CSV1 = "../data/country_code.csv"
 # INPUT_CODES = "country_code.csv"
-OUTPUT_JSON = "data.json"
+OUTPUT_JSON = "../data/data.json"
 
 def preprocess(df1, df2):
 

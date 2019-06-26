@@ -4,23 +4,24 @@
 
 function processPie(dataset, newYear, country){
 
-    var dataset_new = dataset[newYear][country];
-    console.log(dataset_new);
+    // var dataset_new = dataset[newYear][country];
+    // var dataset_pie = $.extend( {}, dataset[newYear][country] );
+    // console.log(dataset_pie);
     var pieData = [];
     var donutData = [];
 
-    Object.keys(dataset_new["healthSpendings"]).forEach(function(d){
+    Object.keys(dataset[newYear][country]["healthSpendings"]).forEach(function(d){
         if (d != "TOT"){
-            pieData.push({"label": d, "value": dataset_new["healthSpendings"][d]});
+            pieData.push({"label": d, "value": dataset[newYear][country]["healthSpendings"][d]});
         }
     });
 
-    Object.keys(dataset_new["governmentSpendings"]).forEach(function(d){
+    Object.keys(dataset[newYear][country]["governmentSpendings"]).forEach(function(d){
         if (d != "TOT"){
-            donutData.push({"label": d, "value": dataset_new["governmentSpendings"][d]});
+            donutData.push({"label": d, "value": dataset[newYear][country]["governmentSpendings"][d]});
         };
     });
-
+    // console.log(dataset)
     return [pieData, donutData];
 };
 
@@ -246,16 +247,14 @@ function donutChart(dataset, newYear, country) {
           .text(function(d) { return keys[d]; });
 
     // Add text to the middle of the donut chart
-    addText(newYear, country);
+    addText(dataset, newYear, country);
 
 };
 
 function updatePie(dataset, newYear, country) {
 
-    // hier bijvoorbeeld al selecteren dat rusland geen data heeft en dan text weergeven dat er geen data is
     // Process data for the pie charts
     var [pieData, donutData] = processPie(dataset, newYear, country);
-    // console.log(pieData)
 
     // Define list of the keys
     var keys = {'OOPEXP': "Out-of-Pocket", "COMPULSORY": "Government/Compulsory", 'VOLUNTARY': "Voluntary"};
@@ -310,32 +309,26 @@ function updatePie(dataset, newYear, country) {
     // Join new data
     const path = svg.selectAll("path")
                     .data(pie(pieData));
-    console.log(pieData)
-    // Update existing arcs
-    path.transition().duration(750).attrTween("d", arcTween);
 
-    // Enter new arcs
-    // path.enter().append("path").merge(path);
+    path.exit().remove().transition().duration(750).attrTween("d", arcTweenPie);
 
-    path.exit().remove().transition().duration(750).attrTween("d", arcTween);
-
-    path.enter().append("path").merge(path)
-        .attr("d", arc)
-        .attr("fill", (d) => colorScale(d.data.label))
+    path.enter().append("path")
         .on("mousemove", tipMouseover)
         .on("mouseout", tipMouseout)
+        .transition().duration(750)
+        .attr("d", arc)
+        .attr("fill", (d) => colorScale(d.data.label))
         .each(function(d) { this._current = d; });
 
-    path.transition().duration(750).attrTween("d", arcTween)
+    path.transition().duration(750).attrTween("d", arcTweenPie).attr("fill", (d) => colorScale(d.data.label))
+
     // https://stackoverflow.com/questions/43577130/error-path-attribute-d-expected-arc-flag-0-or-1
 };
 
 function updateDonut(dataset, newYear, country) {
 
-    // hier bijvoorbeeld al selecteren dat rusland geen data heeft en dan text weergeven dat er geen data is
     // Process data for the pie charts
     var [pieData, donutData] = processPie(dataset, newYear, country);
-    // console.log(pieData)
 
     // Define list of the keys
     var keys = {'DEF': 'Defence', 'HEALTH': 'Health', "HOUCOMM": "Housing and community amenities", "PUBORD" : "Public order and safety", "ECOAFF": "Economic affairs", "GRALPUBSER": "General public services", "RECULTREL": "Recreation, culture and religion", "SOCPROT": "Social protection", "ENVPROT": "Environmental protection", "EDU": "Education"};
@@ -390,26 +383,30 @@ function updateDonut(dataset, newYear, country) {
     // Join new data
     const path = svg.selectAll("path")
                     .data(pie(donutData));
+    console.log(donutData)
 
-    path.exit().remove();
+    path.exit().remove().transition().duration(750).attrTween("d", arcTweenDonut);
 
-    path.enter().append("path").merge(path)
-        .attr("d", arc)
-        .attr("fill", (d) => colorScale(d.data.label))
+    path.enter().append("path")
         .on("mousemove", tipMouseover)
         .on("mouseout", tipMouseout)
+        .transition().duration(750)
+        .attr("d", arc)
+        .attr("fill", (d) => colorScale(d.data.label))
         .each(function(d) { this._current = d; });
 
-    addText(newYear, country);
+    path.transition().duration(750).attrTween("d", arcTweenDonut).attr("fill", (d) => colorScale(d.data.label))
+
+    addText(dataset, newYear, country);
 };
 
-function arcTween(a) {
+function arcTweenPie(a) {
     // Generate the arcs
     var arc = d3v5.arc()
                   .innerRadius(0)
                   .outerRadius(100);
 
-    console.log(this._current);
+    // console.log(this._current);
     var i = d3v5.interpolate(this._current, a);
     this._current = i(0);
     return function(t) {
@@ -417,7 +414,21 @@ function arcTween(a) {
   };
 };
 
-function addText(year, country) {
+function arcTweenDonut(a) {
+    // Generate the arcs
+    var arc = d3v5.arc()
+                  .innerRadius(60)
+                  .outerRadius(100);
+
+    // console.log(this._current);
+    var i = d3v5.interpolate(this._current, a);
+    this._current = i(0);
+    return function(t) {
+        return arc(i(t));
+  };
+};
+
+function addText(dataset, year, country) {
 
     var svg = d3v5.select("svg#donut")
 
@@ -428,10 +439,11 @@ function addText(year, country) {
     svg.append("text")
        .attr("class", "textpie")
        .attr("text-anchor", "middle")
-       .attr('font-size', '1.5em')
+       .attr('font-size', '1.1em')
+       .style("font-weight", "bold")
        .attr("x", 0.09 * (d3v5.select('#piechart').node().getBoundingClientRect().width))
        .attr('y', 200)
-       .text(country);
+       .text(dataset[year][country]['country']);
 
     // Add year in the middle of the donut chart
     svg.append("text")

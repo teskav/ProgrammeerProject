@@ -7,15 +7,12 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
     // Make variable list for to calculate max and min
     var healthSpendings = [];
     var healthVariable = [];
-    for (year in dataset_scatter){
-        for (country in dataset_scatter[year]){
-            healthSpendings.push(dataset_scatter[year][country]['healthSpendings']["TOT"]);
-            if (!(dataset_scatter[year][country][healthvariable] === null)){
-                // console.log(country)
-                healthVariable.push(dataset_scatter[year][country][healthvariable]);
-            };
-
+    for (country in dataset_scatter[YEAR]){
+        healthSpendings.push(dataset_scatter[YEAR][country]['healthSpendings']["TOT"]);
+        if (!(dataset_scatter[YEAR][country][healthvariable] === null)){
+            healthVariable.push(dataset_scatter[YEAR][country][healthvariable]);
         };
+
     };
 
     // Calculate maximums for the domain
@@ -53,7 +50,6 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
                      .range([svgHeight - margin.top, margin.bottom]);
 
     var dataset_new2 = d3v5.entries(dataset_new)
-    console.log(dataset_new2);
 
     // Set color scale for the color of the dots
     var colorScale = d3v5.scaleQuantize()
@@ -96,7 +92,6 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
        .append("circle")
        .attr("class", function(d) { return d.key + " circle"; })
        .attr("cx", function(d) {
-           // console.log(d.key)
            return xScale(d['value']['healthSpendings']['TOT']);
        })
        .attr("cy", function(d) {
@@ -115,10 +110,10 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
            d3v3.selectAll('.circle').classed('active', false);
            // Select dot in scatter plot of specific country
            d3v3.select('.' + currentCountry).classed('active',true);
-           updatePie(dataset_scatter, YEAR, currentCountry);
-           updateDonut(dataset_scatter, YEAR, currentCountry);
+           updatePie(dataset_scatter, $('.slider .parameter-value text').html(), currentCountry);
+           updateDonut(dataset_scatter, $('.slider .parameter-value text').html(), currentCountry);
            // Let user know if there is no data of this country for the donut pie
-           if (JSON.stringify(dataset_scatter[YEAR][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
+           if (JSON.stringify(dataset_scatter[$('.slider .parameter-value text').html()][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
                noDonutData();
            };
        });
@@ -127,26 +122,6 @@ function createScatter(dataset_scatter, YEAR, healthvariable) {
     addLegend(colorScale, margin, svg);
     createLabels(svg, svgWidth, svgHeight, margin, healthvariable);
 
-      // $(window).on('resize', function() {
-      //     var svgWidth = d3v5.select('#scatter').node().getBoundingClientRect().width;
-      //     var svgHeight = 350;
-      //     var margin = {top: 40, right: 30, bottom: 20, left: 50};
-      //     svg.attr("width", svgWidth)
-      //               .attr("height", svgHeight);
-      //     // map.resize();
-      // });
-    //   function updateWindow(){
-    //       var w = window,
-    //         d = document,
-    //         e = d.documentElement,
-    //         g = d.getElementById('scatter'),
-    //     x = d3v5.select('#scatter').node().getBoundingClientRect().width
-    //     // y = w.innerHeight|| e.clientHeight|| g.clientHeight;
-    //
-    //     svg.attr("width", x);
-    // }
-    // d3v5.select(window).on('resize', updateWindow);
-
 }
 
 function updateScatter(dataset_scatter, YEAR, healthvariable) {
@@ -154,15 +129,12 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
     // Make variable list for to calculate max and min
     var healthSpendings = [];
     var healthVariable = [];
-    for (year in dataset_scatter){
-        for (country in dataset_scatter[year]){
-            healthSpendings.push(dataset_scatter[year][country]['healthSpendings']["TOT"]);
-            if (!(dataset_scatter[year][country][healthvariable] === null)){
-                // console.log(country)
-                healthVariable.push(dataset_scatter[year][country][healthvariable]);
-            };
-
+    for (country in dataset_scatter[YEAR]){
+        healthSpendings.push(dataset_scatter[YEAR][country]['healthSpendings']["TOT"]);
+        if (!(dataset_scatter[YEAR][country][healthvariable] === null)){
+            healthVariable.push(dataset_scatter[YEAR][country][healthvariable]);
         };
+
     };
 
     // Calculate maximums for the domain
@@ -177,14 +149,15 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
 
     // Set the new dataset with the right year (make a copy so that it does not delete it in the real dataset)
     var dataset_new =  $.extend( {}, dataset_scatter[YEAR] );
+    // console.log(dataset_scatter)
 
     // Delete rows with missing value of health variable
     Object.values(dataset_new).forEach(function(d) {
         if (d[healthvariable] == null){
-            delete dataset_new[d['country']];
+            delete dataset_new[d['code']];
         }
     });
-
+    console.log(dataset_scatter)
     // Define new xScale
     var xScale = d3v5.scaleLinear()
                      .domain([0, maxSpendings])
@@ -196,12 +169,11 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
                      .range([svgHeight - margin.top, margin.bottom]);
 
     var dataset_new2 = d3v5.entries(dataset_new)
-    console.log(dataset_new2);
 
     // Set color scale for the color of the dots
     var colorScale = d3v5.scaleQuantize()
-                    .domain([2, 10])
-                    .range(['#d9f0a3','#addd8e','#78c679','#31a354','#006837']);
+                         .domain([2, 10])
+                         .range(['#d9f0a3','#addd8e','#78c679','#31a354','#006837']);
 
     // Based this tooltip code on http://bl.ocks.org/williaster/af5b855651ffe29bdca1
     // from Chris Williams’s Block af5b855651ffe29bdca1
@@ -232,6 +204,8 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
     // Create the dots
     svg.selectAll(".circle")
        .data(dataset_new2)
+       .enter().append("circle").merge(svg.selectAll(".circle"))
+       .attr("class", function(d) { return d.key + " circle"; })
        .on("click", function(d) {
            // Set new current country
            currentCountry = d.key;
@@ -241,10 +215,10 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
            d3v3.selectAll('.circle').classed('active', false);
            // Select dot in scatter plot of specific country
            d3v3.select('.' + currentCountry).classed('active',true);
-           updatePie(dataset_scatter, YEAR, currentCountry);
-           updateDonut(dataset_scatter, YEAR, currentCountry);
+           updatePie(dataset_scatter, $('.slider .parameter-value text').html(), currentCountry);
+           updateDonut(dataset_scatter, $('.slider .parameter-value text').html(), currentCountry);
            // Let user know if there is no data of this country for the donut pie
-           if (JSON.stringify(dataset_scatter[YEAR][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
+           if (JSON.stringify(dataset_scatter[$('.slider .parameter-value text').html()][currentCountry]["governmentSpendings"]) === '{}' || currentCountry == 'RUS'){
                noDonutData();
            }
        })
@@ -253,7 +227,6 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
        .transition()
        .duration(1000)
        .ease(d3v5.easeLinear)
-       .attr("class", function(d) { return d.key + " circle"; })
        .attr("cx", function(d) {
            return xScale(d['value']['healthSpendings']['TOT']);
        })
@@ -261,6 +234,8 @@ function updateScatter(dataset_scatter, YEAR, healthvariable) {
            return yScale(d['value'][healthvariable]);
         })
        .style("fill", function(d, i ) { return colorScale(d['value']['healthSpendings']['COMPULSORY']); });
+
+    svg.selectAll(".circle").data(dataset_new2).exit().remove();
 
     updateAxes(xScale, yScale, svgHeight, margin, svg);
     addLegend(colorScale, margin, svg);
@@ -334,7 +309,7 @@ function addLegend(colorScale, margin, svg) {
     svg.append("text")
        .attr("class", "legend")
        .attr("x", margin.left)
-       .attr("y", margin.top / 2)
+       .attr("y", margin.top / 2.2)
        .attr("text-anchor", "start")
        .style("font-weight", "bold")
        .style("font-size", "10px")

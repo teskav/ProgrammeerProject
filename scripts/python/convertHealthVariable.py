@@ -8,13 +8,13 @@ This script converts csv files into a JSON file.
 import pandas as pd
 
 # Global constants for the input and output file
-INPUT_CSV1 = "life_expectancy_all.csv"
-INPUT_CSV2 = "pot_year_of_life_lost.csv"
-INPUT_CSV3 = "deaths_from_cancer.csv"
-INPUT_CSV4 = "infant_mortality_rates.csv"
+INPUT_CSV1 = "../data/life_expectancy_all.csv"
+INPUT_CSV2 = "../data/pot_year_of_life_lost.csv"
+INPUT_CSV3 = "../data/deaths_from_cancer.csv"
+INPUT_CSV4 = "../data/infant_mortality_rates.csv"
 
 # INPUT_CODES = "country_code.csv"
-OUTPUT_JSON = "healthvariables.json"
+OUTPUT_JSON = "../data/healthvariables.json"
 
 def preprocess(df1, df2, df3, df4):
 
@@ -34,8 +34,6 @@ def preprocess(df1, df2, df3, df4):
     df = pd.merge(df1, df2, how='left', on=['LOCATION', 'TIME'])
     df = pd.merge(df, df3, how='left', on=['LOCATION', 'TIME'])
     df = pd.merge(df, df4, how='left', on=['LOCATION', 'TIME'])
-
-    print(df)
 
     return df
 
