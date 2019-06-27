@@ -128,11 +128,11 @@ Today I faced a lot of problems. I found out that my the update of my scatter pl
 So today I did not much for the front of my visualizations, but I fixed a lot of the background.
 
 ## Day 17 (26-06-2019)
-Today I finished my final product. First I added the storytelling. I did this in the explanation tab on my website. I decided to this in another screen and not next to the visualizations, since this is more clear. Otherwise the page would be a mess with too much information.
+Today I finished my final product. First I added the storytelling. I did this in the explanation tab on my website. I decided to do this in another screen and not next to the visualizations, since this is more clear. Otherwise the page would be a mess with too much information.
 
 ![Sketch 15](doc/processBook15.PNG)
 
-In the screenshot you can see I added a note to the user that they can have additional information at the explanation tab. I also deleted the word 'Year' on top of the time slider, since I thought it is clear for the user that is about the year of the dataset.
+In the screenshot you can see I added a note to the user that they can have additional information at the explanation tab. I also deleted the word 'Year' on top of the time slider, since I thought it is clear for the user that it is about the year of the dataset.
 
 I also cleaned my code. I had to delete a lot. I learned from this that I should do this more often during the process of a project and not at the end.
 
